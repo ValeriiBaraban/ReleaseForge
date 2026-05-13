@@ -1,7 +1,7 @@
 # ReleaseForge 🛠️
 **Automated Changelog Builder**
 Structure:
-![Structure](.\source\projectStructure.png)
+![Structure](./source/image.png)
 
 ReleaseForge is a productivity tool tailored for software development teams, independent developers, and product managers. It focuses on the product release lifecycle by streamlining the creation of clean, professional release notes and changelogs.
 
