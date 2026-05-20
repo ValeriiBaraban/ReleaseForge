@@ -1,0 +1,49 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches: 
+      - "main"
+      - "dev"
+    paths:
+      - 'backend/**'
+      - '.github/workflows/development_back.yaml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Copy backend files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "backend/*"
+          target: "~/app"
+
+      - name: Build and Run Docker container
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd ~/app/backend
+            
+            echo "PORT=8080" > .env
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+            
+            sudo docker stop backend-server || true
+            sudo docker rm backend-server || true
+            
+            sudo docker build -t backend-server .
+            
+            sudo docker run -d --name backend-server -p 80:8080 --env-file .env backend-server
+
+            
