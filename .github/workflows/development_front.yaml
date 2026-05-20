@@ -32,7 +32,7 @@ jobs:
       - name: Build project
         working-directory: ./frontend
         run: npm run build
-        
+
       - name: Debug context
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
@@ -43,13 +43,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          # role-to-assume: arn:aws:iam::666735446587:role/my-gitaction-for-summer
           aws-region: us-west-2
 
       - name: Sync site/ to S3 to \site/
         run: |
-          aws s3 sync dist s3://dev-projectsummer.click/ --delete
-
+           aws s3 sync frontend/dist s3://dev-projectsummer.click/ --delete
       - name: Invalidate CloudFront cache
         run: |
            aws cloudfront create-invalidation \
