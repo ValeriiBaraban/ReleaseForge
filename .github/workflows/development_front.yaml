@@ -26,15 +26,13 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        working-directory: ./frontend
         run: npm install
 
       - name: Build project
+        working-directory: ./frontend
         run: npm run build
-        # env:
-          # VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          # VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          # VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
-      
+        
       - name: Debug context
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
