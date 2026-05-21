@@ -5,6 +5,9 @@ on:
     branches: 
       - "main"
       - "dev"
+    # paths:
+    #   - 'frontend/**'
+    #   - '.github/workflows/development_front.yaml'
   workflow_dispatch:
 
 permissions:
