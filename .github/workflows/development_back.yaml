@@ -46,9 +46,9 @@ jobs:
       - name: Copy backend files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ steps.fetch-secrets.outputs.EC2_HOST }}
+          host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ steps.fetch-secrets.outputs.EC2_PRIVATE_KEY }}
+          key: ${{ env.EC2_PRIVATE_KEY }}
           source: "backend/*"
           target: "~/app"
 
@@ -57,9 +57,9 @@ jobs:
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
         with:
-          host: ${{ steps.fetch-secrets.outputs.EC2_HOST }}
+          host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ steps.fetch-secrets.outputs.EC2_PRIVATE_KEY }}
+          key: ${{ env.EC2_PRIVATE_KEY }}
           envs: MONGO_URI
           script: |
             cd ~/app/backend
