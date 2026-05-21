@@ -10,6 +10,10 @@ on:
       - '.github/workflows/development_back.yaml'
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read  
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,26 +22,50 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          # role-to-assume: arn:aws:iam::666735446587:role/github-actions-summer-deployer
+          aws-region: us-west-2
+          
+      - name: Fetch Secrets from SSM
+        id: fetch-secrets
+        run: |
+          DYNAMIC_URI=$(aws ssm get-parameter --name "/releaseforge/backend/mongo_uri" --with-decryption --query "Parameter.Value" --output text)
+          DYNAMIC_IP=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_public_ip" --query "Parameter.Value" --output text)
+          PRIVATE_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text)
+          
+          echo "::add-mask::$DYNAMIC_URI"
+          echo "::add-mask::$PRIVATE_KEY"
+          
+          echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
+          echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
+          echo "EC2_PRIVATE_KEY=$PRIVATE_KEY" >> $GITHUB_ENV
+
       - name: Copy backend files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ steps.fetch-secrets.outputs.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ steps.fetch-secrets.outputs.EC2_PRIVATE_KEY }}
           source: "backend/*"
           target: "~/app"
 
       - name: Build and Run Docker container
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          MONGO_URI: ${{ env.MONGO_URI }}
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ steps.fetch-secrets.outputs.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ steps.fetch-secrets.outputs.EC2_PRIVATE_KEY }}
+          envs: MONGO_URI
           script: |
             cd ~/app/backend
             
             echo "PORT=8080" > .env
-            echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
+            echo "MONGO_URI=$MONGO_URI" >> .env
             
             sudo docker stop backend-server || true
             sudo docker rm backend-server || true
@@ -45,5 +73,3 @@ jobs:
             sudo docker build -t backend-server .
             
             sudo docker run -d --name backend-server -p 80:8080 --env-file .env backend-server
-
-            
