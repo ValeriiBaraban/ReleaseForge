@@ -1,5 +1,5 @@
 FROM node:20-alpine
-WORKDIR /
+WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm cache clean --force && npm ci --omit=dev
