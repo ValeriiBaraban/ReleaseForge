@@ -61,3 +61,9 @@ resource "mongodbatlas_database_user" "db_user" {
   }
 }
 
+resource "aws_ssm_parameter" "mongodb_uri" {
+  name        = "/releaseforge/backend/mongo_uri"
+  description = "MongoDB Connection String with credentials"
+  type        = "SecureString"
+  value       = local.full_mongo_uri
+}
