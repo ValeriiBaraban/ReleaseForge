@@ -1,64 +1,54 @@
 import express from 'express';
-import Message from '../models/Message.js';
+import Message from '../models/Message.js'; 
 
-const router = express.Router();
+export const sampleRoute = express.Router();
 
-router.post('/', async (req, res) => {
+sampleRoute.post('/', async (req, res) => {
   try {
     const { text } = req.body;
 
     if (!text) {
-      return res.status(400).json({ error: 'Empty text' });
+      return res.status(400).json({ error: 'Текст не может быть пустым' });
     }
 
     const newMessage = new Message({ text });
     await newMessage.save();
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 3000));
 
     res.status(200).json({
       success: true,
-      message: `Server received and saved your text: "${text}"`,
+      message: `Текст "${text}" успешно сохранен в MongoDB. ID записи: ${newMessage._id}`,
       savedData: newMessage
     });
 
   } catch (error) {
-    console.error('Error while saving:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Ошибка при сохранении в БД:', error);
+    res.status(500).json({ error: ' ошибка сервера при работе с БД' });
   }
 });
 
-const commitsRoute = express.Router();
 
-//  /api/commits/facebook/react
+export const commitsRoute = express.Router();
+
 commitsRoute.get('/:owner/:repo', async (req, res) => {
   try {
-    // Достаем владельца и название репозитория из URL
     const { owner, repo } = req.params;
-    
-    console.log(`Запрашиваем коммиты для: ${owner}/${repo}...`);
-
-    // Делаем запрос к публичному API GitHub
-    // Если репозиторий большой, можно добавить параметр ?per_page=10, чтобы получить только последние 10
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/commits`);
     
-    // Если GitHub ответил ошибкой (например, репо не существует или он приватный)
     if (!response.ok) {
       return res.status(response.status).json({ 
-        error: `Не удалось получить коммиты. GitHub ответил статусом: ${response.status}` 
+        error: `Не удалось получить коммиты. Статус: ${response.status}` 
       });
     }
 
     const data = await response.json();
-
-    // GitHub отдает ОЧЕНЬ много лишней информации. 
-    // Оставляем только самую важную, чтобы фронтенду было легко это читать.
     const formattedCommits = data.map(commitObj => ({
-      sha: commitObj.sha,                     // Уникальный ID коммита
-      author: commitObj.commit.author.name,   // Имя автора
-      message: commitObj.commit.message,      // Текст коммита
-      date: commitObj.commit.author.date,     // Дата
-      url: commitObj.html_url                 // Ссылка на сам коммит в GitHub
+      sha: commitObj.sha,
+      author: commitObj.commit.author.name,
+      message: commitObj.commit.message,
+      date: commitObj.commit.author.date,
+      url: commitObj.html_url
     }));
 
     res.status(200).json({
@@ -69,9 +59,7 @@ commitsRoute.get('/:owner/:repo', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Ошибка при получении коммитов:', error);
-    res.status(500).json({ error: 'Внутренняя ошибка сервера при обращении к GitHub' });
+    console.error('Ошибка при получении коммитов:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
-
-export default commitsRoute;
