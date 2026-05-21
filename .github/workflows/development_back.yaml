@@ -62,7 +62,7 @@ jobs:
           key_path: "private_key.pem"
           envs: MONGO_URI
           script: |
-            cd ~/app/backend
+            cd ~/app
             
             echo "PORT=8080" > .env
             echo "MONGO_URI=$MONGO_URI" >> .env
