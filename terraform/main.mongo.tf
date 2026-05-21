@@ -43,38 +43,21 @@ resource "mongodbatlas_project_ip_access_list" "allow_all" {
   comment    = "dev access"
 }
 
-# resource "random_password" "db_user_password" {
-#   length           = 16
-#   special          = true
-#   override_special = "_%@"
-# }
-
-# resource "mongodbatlas_database_user" "db_user" {
-#   project_id   = mongodbatlas_project.releaseforge.id
-#   username     = var.db_username
-#   password     = random_password.db_user_password.result
-#   auth_database_name = "admin"
-#   # roles        = [{
-#   #   role_name     = "readWriteAnyDatabase"
-#   #   database_name = var.db_name
-#   # }]
-# }
-
-
-
-# # 3. Выводим пароль (помечаем как sensitive, чтобы не светился в логах CI/CD)
-# output "db_user_password" {
-#   description = "Пароль пользователя БД MongoDB Atlas"
-#   value       = random_password.db_user_password.result
-#   sensitive   = true
-# }
-
-# # Выводим логин просто для удобства
-# output "db_username" {
-#   value = mongodbatlas_database_user.db_user.username
-# }
-
-output "mongo_uri" {
-  value     = mongodbatlas_advanced_cluster.cluster.connection_strings.standard_srv
-  sensitive = false
+resource "random_password" "db_user_password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
 }
+
+resource "mongodbatlas_database_user" "db_user" {
+  project_id         = mongodbatlas_project.releaseforge.id
+  username           = var.db_username
+  password           = random_password.db_user_password.result
+  auth_database_name = "admin"
+
+  roles {
+    role_name     = "readWrite"
+    database_name = var.db_name
+  }
+}
+

@@ -22,3 +22,19 @@ output "github_actions_role_arn" {
   value       = aws_iam_role.github_actions_role.arn
   description = "Copy this ARN to GitHub Workflow to allow it to assume this role for deployments"
 }
+
+
+output "db_user_password" {
+  description = "Password for the MongoDB Atlas database user (output for demonstration purposes, not recommended for production)"
+  value       = random_password.db_user_password.result
+  sensitive   = false
+}
+
+output "db_username" {
+  value = mongodbatlas_database_user.db_user.username
+}
+
+output "mongo_uri" {
+  value     = mongodbatlas_advanced_cluster.cluster.connection_strings.standard_srv
+  sensitive = false
+  }
