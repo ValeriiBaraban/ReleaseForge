@@ -34,21 +34,21 @@ jobs:
         run: |
           DYNAMIC_URI=$(aws ssm get-parameter --name "/releaseforge/backend/mongo_uri" --with-decryption --query "Parameter.Value" --output text)
           DYNAMIC_IP=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_public_ip" --query "Parameter.Value" --output text)
-          PRIVATE_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text)
           
           echo "::add-mask::$DYNAMIC_URI"
-          echo "::add-mask::$PRIVATE_KEY"
           
           echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
-          echo "EC2_PRIVATE_KEY=$PRIVATE_KEY" >> $GITHUB_ENV
+
+          aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text > private_key.pem
+          chmod 600 private_key.pem
 
       - name: Copy backend files to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ env.EC2_PRIVATE_KEY }}
+          key_path: "private_key.pem" 
           source: "backend/*"
           target: "~/app"
 
@@ -59,7 +59,7 @@ jobs:
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ env.EC2_PRIVATE_KEY }}
+          key_path: "private_key.pem"
           envs: MONGO_URI
           script: |
             cd ~/app/backend
@@ -73,3 +73,7 @@ jobs:
             sudo docker build -t backend-server .
             
             sudo docker run -d --name backend-server -p 80:8080 --env-file .env backend-server
+
+      - name: Cleanup
+        if: always()
+        run: rm -f private_key.pem
