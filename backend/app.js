@@ -1,8 +1,9 @@
 
-import { sampleRoute, commitsRoute } from './routes/sample.js';
+import sampleRoute from './routes/sample.js';
 import express, { json } from 'express';
 import { connect } from 'mongoose';
 import cors from 'cors';
+import commitsRoute from './routes/sample.js';
 import dotenv from 'dotenv';
 dotenv.config(); 
 const app = express();
@@ -15,7 +16,7 @@ app.use(cors({
 app.use(json()); 
 
 app.get('/1', (req, res) => {
-  res.send('!API is running');
+  res.send('!! API is running!');
 });
 
 
