@@ -26,7 +26,6 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          # role-to-assume: arn:aws:iam::666735446587:role/github-actions-summer-deployer
           aws-region: us-west-2
           
       - name: Fetch Secrets from SSM
@@ -49,8 +48,9 @@ jobs:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem" 
-          source: "backend/*"
+          source: "backend"
           target: "~/app"
+          strip_components: 1 
 
       - name: Build and Run Docker container
         uses: appleboy/ssh-action@v1.0.3
