@@ -58,7 +58,6 @@ resource "aws_security_group" "releaseforge_sg" {
   description = "Allow HTTP, HTTPS and SSH traffic"
   vpc_id      = aws_vpc.releaseforge_vpc.id
 
-  # Разрешаем SSH (Порт 22) - для доступа в консоль сервера
   ingress {
     from_port   = 22
     to_port     = 22
@@ -73,7 +72,6 @@ resource "aws_security_group" "releaseforge_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Разрешаем HTTPS (Порт 443)
   ingress {
     from_port   = 443
     to_port     = 443
@@ -102,14 +100,30 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# 9. Создаем сам EC2 срвер
+resource "tls_private_key" "releaseforge_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "releaseforge_key_pair" {
+  key_name   = "releaseforge-deployer-key"
+  public_key = tls_private_key.releaseforge_key.public_key_openssh
+}
+
+resource "aws_ssm_parameter" "ec2_private_key" {
+  name        = "/releaseforge/backend/ec2_private_key"
+  description = "Private SSH Key for EC2 Deployment"
+  type        = "SecureString"
+  value       = tls_private_key.releaseforge_key.private_key_pem
+}
+
 resource "aws_instance" "releaseforge_backend" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.releaseforge_public_subnet.id
   vpc_security_group_ids = [aws_security_group.releaseforge_sg.id]
+  key_name      = aws_key_pair.releaseforge_key_pair.key_name
 
-  
   user_data = <<-EOF
               #!/bin/bash
               apt-get update -y
@@ -123,6 +137,7 @@ resource "aws_instance" "releaseforge_backend" {
     Name = "ReleaseForge-Backend-Server"
   }
 }
+
 
 
 //FRONTEND
@@ -351,6 +366,13 @@ resource "aws_ssm_parameter" "cloudfront_distribution_id" {
   description = "CloudFront Distribution ID for GitHub Actions"
   type        = "String"
   value       = aws_cloudfront_distribution.website.id
+}
+
+resource "aws_ssm_parameter" "ec2_public_ip" {
+  name        = "/releaseforge/backend/ec2_public_ip"
+  description = "Public IP address of the Backend EC2 Instance"
+  type        = "String"
+  value       = aws_instance.releaseforge_backend.public_ip
 }
 
 //lambda
