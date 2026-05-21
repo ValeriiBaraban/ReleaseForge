@@ -6,7 +6,7 @@
     "dotenv": "^17.4.2"
   },
   "scripts": {
-    "build": "npx --yes esbuild index.js --bundle --platform=node --packages=external --outfile=dist/index.js",
-    "start": "node dist/index.js"
+    "build": "npx --yes esbuild app.js --bundle --platform=node --packages=external --outfile=dist/app.js",
+    "start": "node dist/app.js"
   }
 }
