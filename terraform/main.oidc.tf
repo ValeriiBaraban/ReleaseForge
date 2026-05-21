@@ -84,50 +84,22 @@ data "aws_iam_policy_document" "github_deploy_permissions" {
     sid    = "AllowSSMParameterRead"
     effect = "Allow"
     actions = [
-      "ssm:GetParameter"
+      "ssm:GetParameter",
+      "ssm:GetParameters"
     ]
     resources = [
-      aws_ssm_parameter.cloudfront_distribution_id.arn
+      aws_ssm_parameter.cloudfront_distribution_id.arn,
+      "arn:aws:ssm:*:*:parameter/projectsummer/*",
+      "arn:aws:ssm:*:*:parameter/releaseforge/*"
     ]
   }
+  statement {
+  sid    = "AllowKMSDecryptForSSM"
+  effect = "Allow"
+  actions = [
+    "kms:Decrypt"
+  ]
+  resources = ["*"] 
+
+  }
 }
-
-# data "aws_iam_policy_document" "github_deploy_permissions" {
-#   statement {
-#     sid    = "AllowS3Sync"
-#     effect = "Allow"
-#     actions = [
-#       "s3:PutObject",
-#       "s3:GetObject",
-#       "s3:ListBucket",
-#       "s3:DeleteObject"
-#     ]
-#     resources = [
-#       aws_s3_bucket.website.arn,
-#       "${aws_s3_bucket.website.arn}/*"
-#     ]
-#   }
-
-#   statement {
-#     sid    = "AllowCloudFrontInvalidation"
-#     effect = "Allow"
-#     actions = [
-#       "cloudfront:CreateInvalidation",
-#       "cloudfront:GetInvalidation"
-#     ]
-#     resources = [
-#       aws_cloudfront_distribution.website.arn
-#     ]
-#   }
-# }
-
-# resource "aws_iam_policy" "github_deploy_policy" {
-#   name        = "github-actions-deploy-policy"
-#   description = "Permissions for GitHub Actions to deploy Frontend"
-#   policy      = data.aws_iam_policy_document.github_deploy_permissions.json
-# }
-
-# resource "aws_iam_role_policy_attachment" "github_attach" {
-#   role       = aws_iam_role.github_actions_role.name
-#   policy_arn = aws_iam_policy.github_deploy_policy.arn
-# }
