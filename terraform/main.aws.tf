@@ -344,6 +344,9 @@ resource "aws_route53_record" "www_a" {
     evaluate_target_health = false
   }
 }
+
+//TODO: SSM
+
 //lambda
 
 # data "aws_iam_policy_document" "lambda_secretsmanager_policy" {
