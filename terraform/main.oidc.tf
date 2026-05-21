@@ -43,6 +43,17 @@ resource "aws_iam_role" "github_actions_role" {
   assume_role_policy = data.aws_iam_policy_document.github_assume_role_policy.json
 }
 
+resource "aws_iam_policy" "github_deploy_policy" {
+  name        = "github-actions-deploy-policy"
+  description = "Permissions for GitHub Actions to deploy Frontend"
+  policy      = data.aws_iam_policy_document.github_deploy_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "github_attach" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = aws_iam_policy.github_deploy_policy.arn
+}
+
 data "aws_iam_policy_document" "github_deploy_permissions" {
   statement {
     sid    = "AllowS3Sync"
@@ -66,20 +77,57 @@ data "aws_iam_policy_document" "github_deploy_permissions" {
       "cloudfront:CreateInvalidation",
       "cloudfront:GetInvalidation"
     ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowSSMParameterRead"
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameter"
+    ]
     resources = [
-      aws_cloudfront_distribution.website.arn
+      aws_ssm_parameter.cloudfront_distribution_id.arn
     ]
   }
 }
 
-resource "aws_iam_policy" "github_deploy_policy" {
-  name        = "github-actions-deploy-policy"
-  description = "Permissions for GitHub Actions to deploy Frontend"
-  policy      = data.aws_iam_policy_document.github_deploy_permissions.json
-}
+# data "aws_iam_policy_document" "github_deploy_permissions" {
+#   statement {
+#     sid    = "AllowS3Sync"
+#     effect = "Allow"
+#     actions = [
+#       "s3:PutObject",
+#       "s3:GetObject",
+#       "s3:ListBucket",
+#       "s3:DeleteObject"
+#     ]
+#     resources = [
+#       aws_s3_bucket.website.arn,
+#       "${aws_s3_bucket.website.arn}/*"
+#     ]
+#   }
 
-resource "aws_iam_role_policy_attachment" "github_attach" {
-  role       = aws_iam_role.github_actions_role.name
-  policy_arn = aws_iam_policy.github_deploy_policy.arn
-}
+#   statement {
+#     sid    = "AllowCloudFrontInvalidation"
+#     effect = "Allow"
+#     actions = [
+#       "cloudfront:CreateInvalidation",
+#       "cloudfront:GetInvalidation"
+#     ]
+#     resources = [
+#       aws_cloudfront_distribution.website.arn
+#     ]
+#   }
+# }
 
+# resource "aws_iam_policy" "github_deploy_policy" {
+#   name        = "github-actions-deploy-policy"
+#   description = "Permissions for GitHub Actions to deploy Frontend"
+#   policy      = data.aws_iam_policy_document.github_deploy_permissions.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "github_attach" {
+#   role       = aws_iam_role.github_actions_role.name
+#   policy_arn = aws_iam_policy.github_deploy_policy.arn
+# }
