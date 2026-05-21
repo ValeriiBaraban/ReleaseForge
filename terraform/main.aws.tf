@@ -346,6 +346,12 @@ resource "aws_route53_record" "www_a" {
 }
 
 //TODO: SSM
+resource "aws_ssm_parameter" "cloudfront_distribution_id" {
+  name        = "/projectsummer/frontend/cloudfront_id"
+  description = "CloudFront Distribution ID for GitHub Actions"
+  type        = "String"
+  value       = aws_cloudfront_distribution.website.id
+}
 
 //lambda
 
