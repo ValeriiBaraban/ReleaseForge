@@ -27,7 +27,7 @@ output "github_actions_role_arn" {
 output "db_user_password" {
   description = "Password for the MongoDB Atlas database user (output for demonstration purposes, not recommended for production)"
   value       = random_password.db_user_password.result
-  sensitive   = false
+  sensitive   = true
 }
 
 output "db_username" {
