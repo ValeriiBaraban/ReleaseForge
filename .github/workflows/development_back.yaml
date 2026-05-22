@@ -26,7 +26,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: us-west-2
+          aws-region: ${{ secrets.AWS_REGION }}
           
       - name: Fetch Secrets from SSM
         id: fetch-secrets
