@@ -6,8 +6,8 @@
     "dotenv": "^17.4.2"
   },
   "scripts": {
-    "build": "npx --yes esbuild app.js --bundle --platform=node --packages=external --outfile=dist/app.js",
-    "start": "node dist/app.js"
+      "build": "esbuild app.js --bundle --platform=node --format=esm --packages=external --outfile=dist/app.js",
+      "start": "node dist/app.js"
   },
   "name": "releaseforge-backend",
   "type": "module",
