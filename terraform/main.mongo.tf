@@ -66,4 +66,5 @@ resource "aws_ssm_parameter" "mongodb_uri" {
   description = "MongoDB Connection String with credentials"
   type        = "SecureString"
   value       = local.full_mongo_uri
+  
 }
