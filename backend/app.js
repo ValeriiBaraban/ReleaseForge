@@ -19,10 +19,12 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080;
 const MONGO_URI = process.env.MONGO_URI;
 
+if (!MONGO_URI) {
+  return console.error('MONGO_URI environment variable is not set. Please set it to connect to the database.');
+  process.exit(1);
+}
 
-connect(MONGO_URI)
-  .then(() => console.log('Connected to the database'))
-  .catch((err) => console.error('Database connection error:', err));
+
 
 try {
   const decodedUri = Buffer.from(MONGO_URI, 'base64').toString('utf-8');
