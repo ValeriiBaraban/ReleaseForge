@@ -15,7 +15,6 @@ function App() {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
-      // Отправляем POST запрос через встроенный fetch
       const res = await fetch(`${apiUrl}/sample`, {
         method: 'POST',
         headers: {
