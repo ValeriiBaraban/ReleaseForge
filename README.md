@@ -28,15 +28,16 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 * **Release:** Belongs to a Project (e.g., "v1.2.0") and contains publishing dates and statuses (Draft/Published).
 * **ChangelogItem:** Individual update entries associated with a Release, including the text and category type (Feature, Fix, Chore).
 
-### 🛣️ API Routes (Express.js)
+## 🛣️ API Routes (Express.js)
+
 | Route | Method | Description |
 | :--- | :---: | :--- |
-| `/api/auth/login` | `POST` | User authentication / Login |
-| `/api/auth/register` | `POST` | User registration |
-| `/api/projects` | `GET/POST` | Manage user projects |
-| `/api/releases/:projectId` | `GET/POST` | CRUD operations for version releases |
-| `/api/github/commits` | `POST` | Receives a repo URL from the frontend, securely calls the GitHub API from the backend, and returns parsed commit data. |
-
+| `/api/auth/login` | `POST` | User authentication and session creation. |
+| `/api/auth/register` | `POST` | New user registration. |
+| `/api/projects` | `GET` / `POST` | Get a list of user projects or create a new project. |
+| `/api/projects/:projectId/releases` | `GET` / `POST` | Get all releases for a specific project or create a new one. |
+| `/api/releases/:releaseId` | `GET` / `PUT` / `DELETE` | Read, update, or delete a specific release (CRUD operations). |
+| `/api/github/commits` | `GET` | Receives a repo URL via query parameter (e.g., `?repo=URL`), securely calls GitHub API, and returns parsed commit data. |
 ---
 
 ## 🎯 Meeting Project Requirements

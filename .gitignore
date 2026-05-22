@@ -18,7 +18,6 @@ terraform.tfstate.backup
 addirional_res
 node_modules
 temp/
-service
 *.pem
 *.key
 *.crt
