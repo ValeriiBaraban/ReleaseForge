@@ -46,7 +46,7 @@ resource "mongodbatlas_project_ip_access_list" "allow_all" {
 resource "random_password" "db_user_password" {
   length           = 16
   special          = true
-  override_special = "_%@"
+  override_special = "_-"
 }
 
 resource "mongodbatlas_database_user" "db_user" {
@@ -66,5 +66,5 @@ resource "aws_ssm_parameter" "mongodb_uri" {
   description = "MongoDB Connection String with credentials"
   type        = "SecureString"
   value       = local.full_mongo_uri
-  
+  overwrite   = true
 }
