@@ -249,6 +249,19 @@ resource "aws_cloudfront_distribution" "website" {
       origin_access_identity = ""
     }
   }
+
+  origin {
+    domain_name = aws_instance.releaseforge_backend.public_dns
+    origin_id   = "ec2-backend-origin"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only" # CloudFront пойдет к EC2 по 80 порту (без SSL)
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
 //TODO:path to index.html
   default_root_object = "index.html"
 
@@ -265,6 +278,30 @@ resource "aws_cloudfront_distribution" "website" {
     response_code         = 200
     response_page_path    = "/index.html"
   }
+
+  ordered_cache_behavior {
+    path_pattern           = "/api/*"
+    target_origin_id       = "ec2-backend-origin"
+    viewer_protocol_policy = "redirect-to-https"
+
+    # Для API разрешаем мутирующие методы
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+
+    forwarded_values {
+      query_string = true
+      headers      = ["*"] 
+      cookies {
+        forward = "all"
+      }
+    }
+
+    min_ttl     = 0
+    default_ttl = 0
+    max_ttl     = 0
+  }
+
+  
 
   default_cache_behavior {
     target_origin_id       = "s3-origin-${aws_s3_bucket.website.id}"

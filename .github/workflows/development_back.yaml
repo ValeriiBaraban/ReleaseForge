@@ -52,7 +52,7 @@ jobs:
           target: "~/app"
           strip_components: 1 
 
-      - name: Build and Run Docker container
+      - name: Build and Run Docker containers (Backend + Nginx)
         uses: appleboy/ssh-action@v1.0.3
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
@@ -67,13 +67,37 @@ jobs:
             echo "PORT=8080" > .env
             echo "MONGO_URI=$MONGO_URI" >> .env
             
-            sudo docker stop backend-server || true
-            sudo docker rm backend-server || true
+            cat << 'EOF' > nginx.conf
+            server {
+                listen 80;
+                
+                add_header X-Frame-Options "SAMEORIGIN";
+                add_header X-XSS-Protection "1; mode=block";
+                add_header X-Content-Type-Options "nosniff";
+                
+                location /api/ {
+                    proxy_pass http://backend-server:8080;
+                    proxy_http_version 1.1;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection 'upgrade';
+                    proxy_set_header Host $host;
+                    proxy_set_header X-Real-IP $remote_addr;
+                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                    proxy_cache_bypass $http_upgrade;
+                }
+            }
+            EOF
+            
+            sudo docker network inspect releaseforge-net >/dev/null 2>&1 || sudo docker network create releaseforge-net
+            
+            sudo docker stop backend-server nginx-server || true
+            sudo docker rm backend-server nginx-server || true
             
             sudo docker build -t backend-server .
+            sudo docker run -d --name backend-server --network releaseforge-net --env-file .env backend-server
             
-            sudo docker run -d --name backend-server -p 80:8080 --env-file .env backend-server
-
+            sudo docker run -d --name nginx-server --network releaseforge-net -p 80:80 -v $(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine
       - name: Cleanup
         if: always()
         run: rm -f private_key.pem
