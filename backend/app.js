@@ -8,12 +8,19 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import mongoose from 'mongoose';
 import User from './models/User.js';
 
+import { sampleRoute, commitsRoute } from './routes/sample.js';
 import authRoutes from './routes/auth.js'; 
+
+if (!process.env.MONGO_URI) {
+  console.error('Критическая ошибка: переменная MONGO_URI не задана!');
+  process.exit(1);
+}
+const decodedMongoUri = Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.set('trust proxy', 1); // need for Nginx
+app.set('trust proxy', 1);
 
 app.use(cors({
   origin: process.env.CLIENT_URL || 'https://projectsummer.click',
@@ -27,13 +34,13 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: mongoStore.create({
-    mongoUrl: process.env.MONGO_URI 
+    mongoUrl: decodedMongoUri 
   }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // true on server, false in local
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }));
 
@@ -53,7 +60,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// GitHub strategy with correct environment variables
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
@@ -83,22 +89,17 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-//app.use('/api/sample', sampleRoute);
-//app.use('/api/commits', commitsRoute);
+app.use('/api/sample', sampleRoute);
+app.use('/api/commits', commitsRoute);
 app.use('/api/auth', authRoutes); 
 
-if (!process.env.MONGO_URI) {
-  console.error('Critical error: MONGO_URI environment variable is not set!');
-  process.exit(1);
-}
-
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(decodedMongoUri)
   .then(() => {
-    console.log('Successful connection to MongoDB');
+    console.log('Успешное подключение к MongoDB');
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Сервер запущен и слушает порт ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('Error connecting to the database:', err);
+    console.error('Ошибка подключения к базе данных:', err);
   });
