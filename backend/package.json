@@ -9,7 +9,7 @@
     "esbuild": "^0.21.3"
   },
   "scripts": {
-      "build": "esbuild app.js --bundle --platform=node --format=esm --packages=external --outfile=dist/app.js",
+      "build": "esbuild app.js --bundle --platform=node --format=cjs --packages=external --outfile=dist/app.js",
       "start": "node dist/app.js"
   },
   "name": "releaseforge-backend",
