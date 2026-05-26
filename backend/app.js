@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 8080;
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-  return console.error('MONGO_URI environment variable is not set. Please set it to connect to the database.');
+  console.error('MONGO_URI environment variable is not set. Please set it to connect to the database.');
   process.exit(1);
 }
 
