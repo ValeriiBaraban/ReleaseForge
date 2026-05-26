@@ -13,5 +13,6 @@
       "start": "node dist/app.js"
   },
   "name": "releaseforge-backend",
+  "type": "module",
   "version": "1.0.0"
 }
