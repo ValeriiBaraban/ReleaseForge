@@ -1,3 +1,4 @@
+// npm install express-session passport passport-github2 connect-mongo
 import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
@@ -20,7 +21,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
+  store: mongoStore.create({
     mongoUrl: process.env.MONGO_URI 
   }),
   cookie: {
