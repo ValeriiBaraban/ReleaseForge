@@ -33,11 +33,21 @@ jobs:
         run: |
           DYNAMIC_URI=$(aws ssm get-parameter --name "/releaseforge/backend/mongo_uri" --with-decryption --query "Parameter.Value" --output text)
           DYNAMIC_IP=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_public_ip" --query "Parameter.Value" --output text)
+
+          GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --with-decryption --query "Parameter.Value" --output text)
+          GH_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_secret" --with-decryption --query "Parameter.Value" --output text)
+          SESS_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/session_secret" --with-decryption --query "Parameter.Value" --output text)
           
           echo "::add-mask::$DYNAMIC_URI"
+          echo "::add-mask::$GH_ID"
+          echo "::add-mask::$GH_SECRET"
+          echo "::add-mask::$SESS_SECRET"
           
           echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
+          echo "GITHUB_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
+          echo "GITHUB_CLIENT_SECRET=$GH_SECRET" >> $GITHUB_ENV
+          echo "SESSION_SECRET=$SESS_SECRET" >> $GITHUB_ENV
 
           aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text > private_key.pem
           chmod 644 private_key.pem
@@ -56,16 +66,22 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
+          GITHUB_CLIENT_ID: ${{ env.GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ env.GITHUB_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ env.SESSION_SECRET }}
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem"
-          envs: MONGO_URI
+          envs: MONGO_URI, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET
           script: |
             cd ~/app
             
             echo "PORT=8080" > .env
             echo "MONGO_URI=$MONGO_URI" >> .env
+            echo "GITHUB_CLIENT_ID=$GITHUB_CLIENT_ID" >> .env
+            echo "GITHUB_CLIENT_SECRET=$GITHUB_CLIENT_SECRET" >> .env
+            echo "SESSION_SECRET=$SESSION_SECRET" >> .env
             
             cat << 'EOF' > nginx.conf
             server {

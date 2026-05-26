@@ -412,6 +412,39 @@ resource "aws_ssm_parameter" "ec2_public_ip" {
   value       = aws_instance.releaseforge_backend.public_ip
 }
 
+resource "aws_ssm_parameter" "github_client_id" {
+  name        = "/releaseforge/backend/github_client_id"
+  description = "GitHub OAuth Client ID for ReleaseForge"
+  type        = "SecureString"
+  value       = "placeholder_id"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+resource "aws_ssm_parameter" "github_client_secret" {
+  name        = "/releaseforge/backend/github_client_secret"
+  description = "GitHub OAuth Client Secret for ReleaseForge"
+  type        = "SecureString"
+  value       = "placeholder_secret"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+resource "aws_ssm_parameter" "session_secret" {
+  name        = "/releaseforge/backend/session_secret"
+  description = "Express session secret key"
+  type        = "SecureString"
+  value       = "placeholder_session_secret"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
 //lambda
 
 # data "aws_iam_policy_document" "lambda_secretsmanager_policy" {
