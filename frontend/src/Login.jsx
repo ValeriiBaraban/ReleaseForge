@@ -1,9 +1,9 @@
 import React from 'react';
+import './App.css';
 
 const Login = () => {
   const handleGithubLogin = () => {
-    // В продакшене это будет 'https://projectsummer.click/api/auth/github'
-    // В разработке 'http://localhost:5000/api/auth/github'
+    //TODO - use env variable for backend URL
     const backendUrl = process.env.REACT_APP_API_URL || 'https://projectsummer.click/api/auth/github';
     window.location.href = backendUrl;
   };

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Login from './Login';
-import './App.css';
 
 function App() {
   const [inputText, setInputText] = useState('');
