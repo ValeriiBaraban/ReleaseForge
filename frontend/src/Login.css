@@ -60,7 +60,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px;
+      padding: 60px 24px;
       background:
         radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.12), transparent),
         var(--surface-base);
@@ -77,31 +77,33 @@
 
     .auth-card__logo {
       font-weight: 700;
-      font-size: 18px;
+      font-size: 24px;
       letter-spacing: -0.03em;
-      margin-bottom: 4px;
+      margin-bottom: 10px;
     }
 
     .auth-card__logo span { color: var(--text-muted); font-weight: 500; }
 
     .auth-card__tagline {
       font-size: 13px;
+      margin-left: 4px;
       color: var(--text-secondary);
-      margin-bottom: 28px;
+      margin-bottom: 36px;
       line-height: 1.5;
     }
 
     .auth-card h1 {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      margin-bottom: 6px;
+      margin-bottom: 0px;
     }
 
     .auth-card__sub {
       font-size: 13px;
+      margin-left: 4px;
       color: var(--text-muted);
-      margin-bottom: 24px;
+      margin-bottom: 0px;
     }
 
     .form-group { margin-bottom: 16px; }
@@ -161,7 +163,7 @@
       width: 100%;
       justify-content: center;
       gap: 10px;
-      padding: 10px 14px;
+      padding: 12px 14px;
       background: var(--surface-base);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
@@ -171,3 +173,32 @@
       background: var(--surface-overlay);
       border-color: var(--border-muted);
     }
+
+     .auth-footer {
+      margin-top: 4px;
+      margin-left: 4px;
+      text-align: left;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-footer a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .auth-footer a:hover { color: var(--text-primary); }
+
+    .auth-hint {
+      margin-top: 20px;
+      padding: 12px;
+      background: var(--surface-base);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .auth-hint strong { color: var(--text-secondary); font-weight: 500; }
