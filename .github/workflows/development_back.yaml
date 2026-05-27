@@ -43,11 +43,11 @@ jobs:
           echo "::add-mask::$GH_SECRET"
           echo "::add-mask::$SESS_SECRET"
           
-          echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
-          echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
-          echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
-          echo "GH_CLIENT_SECRET=$GH_SECRET" >> $GITHUB_ENV
-          echo "SESSION_SECRET=$SESS_SECRET" >> $GITHUB_ENV
+          echo "MONGO_URI=$DYNAMIC_URI" >> $GH_ENV
+          echo "EC2_HOST=$DYNAMIC_IP" >> $GH_ENV
+          echo "GH_CLIENT_ID=$GH_ID" >> $GH_ENV
+          echo "GH_CLIENT_SECRET=$GH_SECRET" >> $GH_ENV
+          echo "SESSION_SECRET=$SESS_SECRET" >> $GH_ENV
 
           aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text > private_key.pem
           chmod 644 private_key.pem
