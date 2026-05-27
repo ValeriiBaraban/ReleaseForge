@@ -43,7 +43,7 @@ jobs:
           echo "::add-mask::$GH_SECRET"
           echo "::add-mask::$SESS_SECRET"
           
-          echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
+          echo "MONGO_URI=$DYNAMIC_URI+34" >> $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
           echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
           echo "GH_CLIENT_SECRET=$GH_SECRET" >> $GITHUB_ENV
@@ -77,7 +77,7 @@ jobs:
           script: |
             cd ~/app
             echo "PORT=8080" > .env
-            echo "MONGO_URI=$DYNAMIC_URI" >> .env
+            echo "MONGO_URI=$DYNAMIC_URI+12" >> .env
             echo "EC2_HOST=$DYNAMIC_IP" >> .env
             echo "GH_CLIENT_ID=$GH_ID" >> .env         
             echo "GH_CLIENT_SECRET=$GH_SECRET" >> .env
