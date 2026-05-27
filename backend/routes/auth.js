@@ -36,7 +36,7 @@ router.get("/github/callback", (req, res, next) => {
       }
       
       // Успех!
-      return res.status(200).redirect('https://projectsummer.click/dashboard');
+      return res.redirect('https://projectsummer.click/dashboard');
     });
   })(req, res, next);
 });
