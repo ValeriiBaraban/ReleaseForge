@@ -16,6 +16,10 @@ function Dashboard() {
 
   if (!user) return <h2>Loading...</h2>;
 
+  const handleLogout = () => {
+    window.location.href = 'https://projectsummer.click/api/auth/logout';
+  };
+
   return (
     <div className="dashboard-container">
       
