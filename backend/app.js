@@ -12,7 +12,7 @@ import { sampleRoute, commitsRoute } from './routes/sample.js';
 import authRoutes from './routes/auth.js'; 
 
 if (!process.env.MONGO_URI) {
-  console.error('Критическая ошибка: переменная MONGO_URI не задана!');
+  console.error('mongo uri is not set');
   process.exit(1);
 }
 const decodedMongoUri = Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
@@ -48,7 +48,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
