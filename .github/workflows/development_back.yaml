@@ -76,6 +76,7 @@ jobs:
           envs: MONGO_URI, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET
           script: |
             cd ~/app
+            echo "PORT=8080" > .env
             echo "MONGO_URI=$DYNAMIC_URI" >> .env
             echo "EC2_HOST=$DYNAMIC_IP" >> .env
             echo "GH_CLIENT_ID=$GH_ID" >> .env         
