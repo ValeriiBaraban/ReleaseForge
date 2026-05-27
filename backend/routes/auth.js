@@ -14,10 +14,10 @@ router.get('/github',
 //   }
 // );
 
-router.get("/github/callback", (req, res, next) => {
+router.get("/github/callback", (req, res) => {
   passport.authenticate("github", (err, user, info) => {
     if (err) {
-      console.error('error passport', err);
+      console.error('error passport!', err);
       return res.status(500).json({ 
         message: 'console error passport', 
         error: err.message || err 
