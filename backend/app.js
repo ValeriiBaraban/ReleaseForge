@@ -70,9 +70,9 @@ passport.use(new GitHubStrategy({
       let user = await User.findOne({ githubId: profile.id });
       let email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
 
-      if (!email) {
-        return done(new Error('GitHub profile does not contain an email address'), null);
-      }
+      // if (!email) {
+      //   return done(new Error('GitHub profile does not contain an email address'), null);
+      // }
 
       if (user) {
         user.accessToken = accessToken;
