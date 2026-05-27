@@ -66,14 +66,14 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
-          GITHUB_CLIENT_ID: ${{ env.GITHUB_CLIENT_ID }}
-          GITHUB_CLIENT_SECRET: ${{ env.GITHUB_CLIENT_SECRET }}
+          GH_CLIENT_ID: ${{ env.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ env.GH_CLIENT_SECRET }}
           SESSION_SECRET: ${{ env.SESSION_SECRET }}
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem"
-          envs: MONGO_URI, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, SESSION_SECRET
+          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET
           script: |
             cd ~/app
             echo "PORT=8080" > .env
