@@ -34,16 +34,16 @@ jobs:
           DYNAMIC_URI=$(aws ssm get-parameter --name "/releaseforge/backend/mongo_uri" --with-decryption --query "Parameter.Value" --output text)
           DYNAMIC_IP=$(aws ssm get-parameter --name "/releaseforge/backend/ec2_public_ip" --query "Parameter.Value" --output text)
 
-          GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --with-decryption --query "Parameter.Value" --output text)
-          GH_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_secret" --with-decryption --query "Parameter.Value" --output text)
-          SESS_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/session_secret" --with-decryption --query "Parameter.Value" --output text)
+          GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --query "Parameter.Value" --output text)
+          GH_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_secret"  --query "Parameter.Value" --output text)
+          SESS_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/session_secret" --query "Parameter.Value" --output text)
           
           echo "::add-mask::$DYNAMIC_URI"
           echo "::add-mask::$GH_ID"
           echo "::add-mask::$GH_SECRET"
           echo "::add-mask::$SESS_SECRET"
           
-          echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
+          echo "MONGO_URI=$DYNAMIC_URI" > $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
           echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
           echo "GH_CLIENT_SECRET=$GH_SECRET" >> $GITHUB_ENV
