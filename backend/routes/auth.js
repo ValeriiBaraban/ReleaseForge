@@ -14,7 +14,7 @@ router.get('/github',
 //   }
 // );
 
-router.get("github/callback", (req, res, next) => {
+router.get("/github/callback", (req, res, next) => {
   passport.authenticate("github", (err, user, info) => {
     if (err) {
       console.error('error passport', err);
