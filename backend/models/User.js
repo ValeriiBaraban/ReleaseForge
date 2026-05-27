@@ -11,19 +11,24 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: false, unique: true } 
 }, { timestamps: true });
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('accessToken')){
-    return next();
-  }
+// userSchema.pre('save', async function (next) {
+//   try {
+//   if (!this.isModified('accessToken') || !this.accessToken) {
+//       return next();
+//     }
+//   } catch (error) {
+//     return next(error);
+//   }
+
   
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.accessToken = await bcrypt.hash(this.accessToken, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+//   try {
+//     const salt = await bcrypt.genSalt(10);
+//     this.accessToken = await bcrypt.hash(this.accessToken, salt);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 userSchema.methods.compareAccessToken = async function (accessToken) {
   return await bcrypt.compare(accessToken, this.accessToken);
