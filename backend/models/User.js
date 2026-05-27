@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   displayName: { type: String },
   avatar: { type: String },
   accessToken: { type: String },
-  email: { type: String, required: true, unique: true } 
+  email: { type: String, required: false, unique: true } 
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
