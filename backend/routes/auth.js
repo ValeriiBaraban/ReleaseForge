@@ -14,7 +14,7 @@ router.get('/github',
 //   }
 // );
 
-router.get("github/callback", (req, res, next) => {
+router.get("/github/callback", (req, res, next) => {
   passport.authenticate("github", (err, user, info) => {
     if (err) {
       console.error('error passport1', err);
@@ -31,11 +31,10 @@ router.get("github/callback", (req, res, next) => {
       });
     }req.logIn(user, (loginErr) => {
       if (loginErr) {
-        console.error('session broken (req.logIn):', loginErr);
-        return res.status(500).json({ message: 'session not created4', error: loginErr.message });
+        console.error('error session5 (req.logIn):', loginErr);
+        return res.status(500).json({ message: 'error session6 ', error: loginErr.message });
       }
       
-      // Успех!
       return res.redirect('https://projectsummer.click/dashboard');
     });
   })(req, res, next);
