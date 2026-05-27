@@ -77,11 +77,11 @@ jobs:
           script: |
             cd ~/app
             echo "PORT=8080" > .env
-            echo "MONGO_URI=$DYNAMIC_URI+12" >> .env
-            echo "EC2_HOST=$DYNAMIC_IP" >> .env
-            echo "GH_CLIENT_ID=$GH_ID" >> .env         
-            echo "GH_CLIENT_SECRET=$GH_SECRET" >> .env
-            echo "SESSION_SECRET=$SESS_SECRET" >> .env
+            echo "MONGO_URI=$MONGO_URI" >> .env
+            echo "EC2_HOST=$EC2_HOST" >> .env
+            echo "GH_CLIENT_ID=$GH_CLIENT_ID" >> .env         
+            echo "GH_CLIENT_SECRET=$GH_CLIENT_SECRET" >> .env
+            echo "SESSION_SECRET=$SESSION_SECRET" >> .env
             
             cat << 'EOF' > nginx.conf
             server {
