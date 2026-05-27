@@ -68,18 +68,26 @@ passport.use(new GitHubStrategy({
   async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await User.findOne({ githubId: profile.id });
+      let email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
+
+      if (!email) {
+        return done(new Error('GitHub profile does not contain an email address'), null);
+      }
 
       if (user) {
         user.accessToken = accessToken;
+        user.email = email;
         await user.save();
         return done(null, user);
       } else {
         user = await User.create({
+          
           githubId: profile.id,
           username: profile.username,
           displayName: profile.displayName || profile.username,
           avatar: profile.photos[0]?.value,
-          accessToken: accessToken
+          accessToken: accessToken,
+          email: email
         });
         return done(null, user);
       }
