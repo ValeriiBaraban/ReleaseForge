@@ -84,6 +84,7 @@ passport.use(new GitHubStrategy({
         return done(null, user);
       }
     } catch (error) {
+      console.error("ERROR DB githubstrategy:", error)
       return done(error, null);
     }
   }
