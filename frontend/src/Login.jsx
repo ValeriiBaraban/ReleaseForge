@@ -2,12 +2,14 @@ import React from 'react';
 import './Login.css';
 
 const Login = () => {
-  const handleGithubLogin = () => {
-    //TODO - use env variable for backend URL
-    const backendUrl = process.env.REACT_APP_API_URL || 'https://projectsummer.click/api/auth/github';
-    window.location.href = backendUrl;
-  };
+ const handleGithubLogin = () => {
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const backendUrl = isLocal 
+    ? 'http://localhost:8080/api/auth/github' 
+    : 'https://projectsummer.click/api/auth/github';
 
+  window.location.href = backendUrl;
+};
   return (
     <div className="auth-screen-wrap is-active">
       <div className="auth-screen">
