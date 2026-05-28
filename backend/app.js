@@ -40,7 +40,7 @@ app.use(session({
     secure: false, //process.env.NODE_ENV === 'production',
     httpOnly: true, 
     sameSite: 'lax',
-    maxAge: 1000 * 60 * 60 * 24 * 7
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
 
@@ -76,6 +76,7 @@ passport.use(new GitHubStrategy({
 
       if (user) {
         user.accessToken = accessToken;
+        await user.save();
         user.email = email;
         await user.save();
         return done(null, user);
@@ -92,7 +93,14 @@ passport.use(new GitHubStrategy({
         return done(null, user);
       }
     } catch (error) {
-      console.error("ERROR DB githubstrategy:", error)
+      if (error.status === 401) {
+        console.error("Unauthorized error in GitHubStrategy:", error);
+        return done(new Error('Unauthorized: Invalid GitHub credentials'), null);
+      } else if (error.name === 'MongoError' && error.code === 11000) {
+        console.error("Database error in GitHubStrategy:", error);
+        return done(new Error('Database error: Duplicate entry'), null);
+      }
+      console.error("Error in GitHubStrategy:", error);
       return done(error, null);
     }
   }
@@ -104,11 +112,11 @@ app.use('/api/auth', authRoutes);
 
 mongoose.connect(decodedMongoUri)
   .then(() => {
-    console.log('Успешное подключение к MongoDB');
+    console.log('connected to MongoDB');
     app.listen(PORT, () => {
-      console.log(`Сервер запущен и слушает порт ${PORT}`);
+      console.log(`Server is running and listening on port ${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('Ошибка подключения к базе данных:', err);
+    console.error('Error connecting to the database:', err);
   });
