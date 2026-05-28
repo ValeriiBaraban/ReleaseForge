@@ -20,7 +20,7 @@ const decodedMongoUri = Buffer.from(process.env.MONGO_URI, 'base64').toString('u
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 app.use(cors({
   origin: process.env.CLIENT_URL || 'https://projectsummer.click',
@@ -37,7 +37,7 @@ app.use(session({
     mongoUrl: decodedMongoUri 
   }),
   cookie: {
-    secure: false, //process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true, 
     sameSite: 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7
