@@ -257,7 +257,7 @@ resource "aws_cloudfront_distribution" "website" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy = "http-only" # CloudFront пойдет к EC2 по 80 порту (без SSL)
+      origin_protocol_policy = "http-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
@@ -444,6 +444,42 @@ resource "aws_ssm_parameter" "session_secret" {
     ignore_changes = [value]
   }
 }
+
+resource "random_id" "encryption_key" {
+  byte_length = 32
+}
+
+resource "aws_ssm_parameter" "encryption_key" {
+  name        = "/releaseforge/backend/ENCRYPTION_KEY"
+  description = "AES-256 encryption key for ReleaseForge DB tokens"
+  type        = "SecureString"
+  value       = random_id.encryption_key.hex
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+//allow read ssm parameter for EC2 instance (for deployment and backend use) - TODO: attach policy to EC2 role
+# resource "aws_iam_policy" "ssm_read_policy" {
+#   name        = "ReleaseForgeSSMRead"
+#   description = "Allow EC2 to read parameters from SSM"
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Action = [
+#           "ssm:GetParameter",
+#           "ssm:GetParameters",
+#           "ssm:GetParametersByPath"
+#         ]
+#         Effect   = "Allow"
+#         Resource = aws_ssm_parameter.encryption_key.arn
+#       },
+#     ]
+#   })
+# }
+
 
 //lambda
 
