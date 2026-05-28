@@ -30,9 +30,6 @@ const userSchema = new mongoose.Schema({
 //   }
 // });
 
-userSchema.methods.compareAccessToken = async function (accessToken) {
-  return await bcrypt.compare(accessToken, this.accessToken);
-};
 
 const User = mongoose.model('User', userSchema);
 
