@@ -18,7 +18,7 @@
 * Finish the CRUD API routes for managing projects and generated changelogs.
 * Connect the frontend Dashboard to the `/api/commits` route to fetch and display the user's real GitHub commit history.
 * Build the interactive UI for parsing and categorizing commits into "Features", "Fixes", etc.
-* Final UI styling and production deployment tweaks.
+* Final UI styling (using vanilla CSS) and production deployment tweaks on AWS.
 
 ---
 
@@ -36,7 +36,13 @@ Translating these commits into a structured, user-friendly changelog (categorize
 
 ## ⚙️ Technical Components
 
-The application is built using the **MERN stack** (MongoDB, Express, React, Node.js) and provisioned using **Terraform** on Railway and MongoDB Atlas.
+The application is built using the **MERN stack** (MongoDB, Express, React, Node.js) and provisioned using **Terraform** on **AWS** and MongoDB Atlas.
+
+### 🌐 Infrastructure & Deployment
+* **Frontend:** Hosted on an **AWS S3** bucket and distributed globally via **AWS CloudFront** for high availability.
+* **Backend:** Deployed on an **AWS EC2** instance, utilizing **AWS SSM** (Systems Manager) for secure parameter and secrets management.
+* **Database:** MongoDB Atlas cluster integrated with the backend environment.
+* **IaC:** The entire cloud architecture is codified and deployed using **Terraform**.
 
 ### 🌐 External Data Source (API)
 Integration with the **GitHub REST API**. The backend fetches recent commit messages from public repositories to automatically populate draft release notes, saving users from typing everything from scratch.
@@ -65,29 +71,30 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 * **Database Integration:** MongoDB Atlas persistently stores user profiles, projects, and the generated release documents.
 * **RESTful API:** The Express backend handles all database operations and securely manages the interaction with the external GitHub API.
 * **Frontend Framework:** A React SPA provides a drag-and-drop or interactive categorization interface to sort imported commits into changelog sections.
-* **Deployment:** The entire infrastructure (Railway backend/frontend and MongoDB Atlas) is deployed as code using **Terraform**.
+* **Deployment:** The entire infrastructure (AWS EC2/S3/CloudFront and MongoDB Atlas) is deployed as code using **Terraform**.
 * **Value Generation:** The project solves a tangible workflow problem in the software industry, demonstrating a strong understanding of developer tooling.
 
 ---
 
 ## 🗓️ Project Timeline
 
-### **Week 1: Infrastructure & Scaffolding**
-- [x] Deploy MongoDB Atlas and Railway environment via Terraform.
+### **Week 1: Infrastructure, CI/CD & Scaffolding** *(Completed)*
+- [x] Deploy MongoDB Atlas and AWS environment (EC2, S3, CloudFront) via Terraform.
+- [x] Configure CI/CD pipelines for automated deployment to AWS.
 - [x] Initialize React frontend and Express backend.
-- [x] Set up environment variables and connect the database.
+- [x] Set up environment variables via AWS SSM and connect the database.
 
-### **Week 2: Database Models & Backend API**
+### **Week 2: Database Models & Backend API** *(In Progress)*
 - [x] Build Mongoose schemas (User schema completed, others pending).
-- [ ] Develop CRUD routes and test via Postman.
+- [ ] Develop the remaining CRUD API routes for projects and releases.
 - [x] Implement the GitHub API integration route to fetch commits.
 
-### **Week 3: Frontend Development**
+### **Week 3: Frontend Development** *(In Progress)*
 - [x] Build the React UI (Dashboard and Login framework established).
 - [x] Connect the frontend to the backend API using Axios/Fetch.
 - [ ] Create the logic for parsing and categorizing fetched commits.
 
-### **Week 4: Styling, Export & Final Deployment**
-- [ ] Implement final CSS/Tailwind styling for the generated changelog view.
-- [ ] Ensure CI/CD pipelines push correctly to the Railway production environment.
+### **Week 4: Styling, Testing & Final Export** *(Upcoming Phase)*
+- [ ] Implement final CSS styling for the generated changelog view.
+- [ ] Conduct comprehensive API testing via Postman and end-to-end UI testing.
 - [ ] Final bug fixing, code cleanup, and presentation preparation.
