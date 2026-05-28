@@ -37,7 +37,7 @@ app.use(session({
     mongoUrl: decodedMongoUri 
   }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false //process.env.NODE_ENV === 'production',
     httpOnly: true, 
     sameSite: 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7
