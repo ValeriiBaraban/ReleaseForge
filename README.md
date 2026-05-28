@@ -1,7 +1,26 @@
 # ReleaseForge 🛠️
 **Automated Changelog Builder**
-Structure:
+
 ![Structure](./source/image.png)
+
+## 📢 Week 8 Update: Project Status (Proof of Concept)
+
+**✅ Work Completed (Project Setup & Framework):**
+* **Express Server & Middleware:** Fully functional Express server running, configured with CORS, JSON parsing, and secure proxy trust for deployment.
+* **Database Connection:** Successful integration with **MongoDB Atlas** using Mongoose.
+* **Authentication Framework:** Implemented a robust OAuth workflow using `passport-github2`. Users can successfully log in via GitHub, and their profiles (along with the necessary `accessToken` for future API calls) are saved directly into the MongoDB database.
+* **Session Management:** Configured secure, HTTP-only cookies and integrated `connect-mongo` to store active user sessions persistently in the database.
+* **Frontend Scaffolding:** React SPA initialized with React Router. Built a landing/login page and a protected Dashboard component that successfully verifies user sessions with the backend.
+* **API Routing Framework:** Modularized routing structure is in place (e.g., `/api/auth`, `/api/commits`), ready for expansion.
+
+**🚧 Work Still Needs to be Done:**
+* Complete the remaining Mongoose schemas (`Project`, `Release`, `ChangelogItem`).
+* Finish the CRUD API routes for managing projects and generated changelogs.
+* Connect the frontend Dashboard to the `/api/commits` route to fetch and display the user's real GitHub commit history.
+* Build the interactive UI for parsing and categorizing commits into "Features", "Fixes", etc.
+* Final UI styling and production deployment tweaks.
+
+---
 
 ReleaseForge is a productivity tool tailored for software development teams, independent developers, and product managers. It focuses on the product release lifecycle by streamlining the creation of clean, professional release notes and changelogs.
 
@@ -38,6 +57,7 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 | `/api/projects/:projectId/releases` | `GET` / `POST` | Get all releases for a specific project or create a new one. |
 | `/api/releases/:releaseId` | `GET` / `PUT` / `DELETE` | Read, update, or delete a specific release (CRUD operations). |
 | `/api/github/commits` | `GET` | Receives a repo URL via query parameter (e.g., `?repo=URL`), securely calls GitHub API, and returns parsed commit data. |
+
 ---
 
 ## 🎯 Meeting Project Requirements
@@ -53,18 +73,18 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 ## 🗓️ Project Timeline
 
 ### **Week 1: Infrastructure & Scaffolding**
-- [ ] Deploy MongoDB Atlas and Railway environment via Terraform.
-- [ ] Initialize React frontend and Express backend.
-- [ ] Set up environment variables and connect the database.
+- [x] Deploy MongoDB Atlas and Railway environment via Terraform.
+- [x] Initialize React frontend and Express backend.
+- [x] Set up environment variables and connect the database.
 
 ### **Week 2: Database Models & Backend API**
-- [ ] Build Mongoose schemas (User, Project, Release).
+- [x] Build Mongoose schemas (User schema completed, others pending).
 - [ ] Develop CRUD routes and test via Postman.
-- [ ] Implement the GitHub API integration route to fetch commits.
+- [x] Implement the GitHub API integration route to fetch commits.
 
 ### **Week 3: Frontend Development**
-- [ ] Build the React UI (Dashboard, Project View, Release Editor).
-- [ ] Connect the frontend to the backend API using Axios.
+- [x] Build the React UI (Dashboard and Login framework established).
+- [x] Connect the frontend to the backend API using Axios/Fetch.
 - [ ] Create the logic for parsing and categorizing fetched commits.
 
 ### **Week 4: Styling, Export & Final Deployment**
