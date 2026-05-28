@@ -8,14 +8,13 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import mongoose from 'mongoose';
 import User from './models/User.js';
 
-import { sampleRoute, commitsRoute } from './routes/sample.js';
 import authRoutes from './routes/auth.js'; 
 
 if (!process.env.MONGO_URI) {
   console.error('mongo uri is not set');
   process.exit(1);
 }
-const decodedMongoUri = Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
+const decodedMongoUri = process.env.MONGO_URI; // Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -37,6 +36,7 @@ app.use(session({
     mongoUrl: decodedMongoUri 
   }),
   cookie: {
+    //TODO: return secure to true when deploying to production with HTTPS
     secure: false, //process.env.NODE_ENV === 'production',
     httpOnly: true, 
     sameSite: 'lax',
@@ -63,7 +63,7 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GitHubStrategy({
     clientID: process.env.GH_CLIENT_ID,
     clientSecret: process.env.GH_CLIENT_SECRET,
-    callbackURL: "https://projectsummer.click/api/auth/github/callback"
+    callbackURL: `${process.env.GITHUB_AUTH_URL}/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -106,8 +106,6 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-app.use('/api/sample', sampleRoute);
-app.use('/api/commits', commitsRoute);
 app.use('/api/auth', authRoutes); 
 
 mongoose.connect(decodedMongoUri)
