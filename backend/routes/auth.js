@@ -8,7 +8,7 @@ router.get('/github',
 );
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: 'https://projectsummer.click/login' }),
+  passport.authenticate('github', { failureRedirect: 'https://projectsummer.click' }),
   (req, res) => {
     res.redirect('https://projectsummer.click/dashboard');
   }
@@ -43,7 +43,7 @@ router.get('/github/callback',
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {
     if (err) { return next(err); }
-    res.redirect('https://projectsummer.click/login');
+    res.redirect('https://projectsummer.click');
   });
 });
 
