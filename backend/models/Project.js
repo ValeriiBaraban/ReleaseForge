@@ -1,11 +1,26 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const projectSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true, unique: true},
-  description: { type: String, required: false, trim: true, unique: false},
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true 
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true 
+  },
+  repoUrl: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  description: {
+    type: String,
+    trim: true
+  }
 }, { timestamps: true });
 
-const Project = mongoose.model('Project', projectSchema);
-
-export default Project;
+export default mongoose.model('Project', projectSchema);
