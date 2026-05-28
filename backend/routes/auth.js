@@ -1,5 +1,6 @@
 import express from 'express';
 import passport from 'passport';
+import { isAuthenticated } from '../middlewares/authCheck.js';
 
 const router = express.Router();
 
@@ -8,9 +9,9 @@ router.get('/github',
 );
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: 'https://projectsummer.click' }),
+  passport.authenticate('github', { failureRedirect: `${process.env.CLIENT_URL}/` }),
   (req, res) => {
-    res.redirect('https://projectsummer.click/dashboard');
+    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
   }
 );
 
@@ -35,7 +36,7 @@ router.get('/github/callback',
 //         return res.status(500).json({ message: 'error session6 ', error: loginErr.message });
 //       }
       
-//       return res.redirect('https://projectsummer.click/dashboard');
+//       return res.redirect(`${process.env.CLIENT_URL}/dashboard`);
 //     });
 //   })(req, res, next);
 // });
@@ -43,16 +44,12 @@ router.get('/github/callback',
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {
     if (err) { return next(err); }
-    res.redirect('https://projectsummer.click');
+    res.redirect(`${process.env.CLIENT_URL}/`);
   });
 });
 
-router.get('/current-user', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.status(401).json({ message: 'Not authenticated' });
-  }
+router.get('/current-user', isAuthenticated, (req, res) => {
+  res.json(req.user);
 });
 
 export default router;
