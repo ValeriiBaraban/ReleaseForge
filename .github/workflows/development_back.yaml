@@ -37,18 +37,20 @@ jobs:
           GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --with-decryption --query "Parameter.Value" --output text)
           GH_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_secret" --with-decryption --query "Parameter.Value" --output text)
           SESS_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/session_secret" --with-decryption --query "Parameter.Value" --output text)
-          
+          ENCRYPTION_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/ENCRYPTION_KEY" --with-decryption --query "Parameter.Value" --output text)
+
           echo "::add-mask::$DYNAMIC_URI"
           echo "::add-mask::$GH_ID"
           echo "::add-mask::$GH_SECRET"
           echo "::add-mask::$SESS_SECRET"
+          echo "::add-mask::$ENCRYPTION_KEY"
           
           echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
           echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
           echo "GH_CLIENT_SECRET=$GH_SECRET" >> $GITHUB_ENV
           echo "SESSION_SECRET=$SESS_SECRET" >> $GITHUB_ENV
-
+          echo "ENCRYPTION_KEY=$ENCRYPTION_KEY" >> $GITHUB_ENV
           aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text > private_key.pem
           chmod 644 private_key.pem
 
@@ -69,11 +71,12 @@ jobs:
           GH_CLIENT_ID: ${{ env.GH_CLIENT_ID }}
           GH_CLIENT_SECRET: ${{ env.GH_CLIENT_SECRET }}
           SESSION_SECRET: ${{ env.SESSION_SECRET }}
+          ENCRYPTION_KEY: ${{ env.ENCRYPTION_KEY }}
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem"
-          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET
+          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY
           script: |
             cd ~/app
             echo "PORT=8080" > .env
@@ -82,6 +85,8 @@ jobs:
             echo "GH_CLIENT_ID=$GH_CLIENT_ID" >> .env         
             echo "GH_CLIENT_SECRET=$GH_CLIENT_SECRET" >> .env
             echo "SESSION_SECRET=$SESSION_SECRET" >> .env
+            echo "ENCRYPTION_KEY=$ENCRYPTION_KEY" >> .env
+            
             
             cat << 'EOF' > nginx.conf
             server {
