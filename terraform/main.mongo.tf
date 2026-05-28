@@ -49,7 +49,7 @@ resource "random_password" "db_user_password" {
   override_special = "_-"
 }
 
-TODO: In production we should use role_name "readWrite" and var.db_name instead of "admin" to follow the principle of least privilege. For development, we can use readWriteAnyDatabase for convenience.
+//TODO: In production we should use role_name "readWrite" and var.db_name instead of "admin" to follow the principle of least privilege. For development, we can use readWriteAnyDatabase for convenience.
 resource "mongodbatlas_database_user" "db_user" {
   project_id         = mongodbatlas_project.releaseforge.id
   username           = var.db_username
