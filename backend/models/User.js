@@ -3,12 +3,12 @@ import bcrypt from 'bcrypt';
 import { use } from 'react';
 
 const userSchema = new mongoose.Schema({
-  githubId: { type: String, required: true, unique: true },
-  username: { type: String, required: true },
-  displayName: { type: String },
+  githubId: { type: String, required: true, unique: true, trim: true },
+  username: { type: String, required: true, unique: true, trim: true },
+  displayName: { type: String, trim: true },
   avatar: { type: String },
-  accessToken: { type: String },
-  email: { type: String, required: false, unique: true } 
+  accessToken: { type: String, select: false },
+  email: { type: String, required: false, unique: true, sparse: true, lowercase: true, trim: true } 
 }, { timestamps: true });
 
 // userSchema.pre('save', async function (next) {
