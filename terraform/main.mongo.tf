@@ -65,7 +65,7 @@ resource "mongodbatlas_database_user" "db_user" {
 resource "mongodbatlas_database_user" "db_user_local" {
   project_id         = mongodbatlas_project.releaseforge.id
   username           = "userLocal"
-  password           = random_password.db_user_password.result
+  password           = var.local_password
   auth_database_name = "admin"
 
   roles {
