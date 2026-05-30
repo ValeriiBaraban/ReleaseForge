@@ -56,8 +56,8 @@ const CommitHistory = () => {
           <ul>
             {commits.map((commit) => (
               <li key={commit.sha}>
-                <p>{commit.commit.message}</p>
-                <p>{commit.commit.author.name} - {new Date(commit.commit.author.date).toLocaleString()}</p>
+                <p>{commit.message}</p>
+                <p>{commit.author.name} - {new Date(commit.author.date).toLocaleString()}</p>
               </li>
             ))}
           </ul>
