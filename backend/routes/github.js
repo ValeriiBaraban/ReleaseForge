@@ -1,8 +1,8 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
 import { Octokit } from '@octokit/rest';
-import { RawCommit } from '../models/RawCommit.js';
-import { Project } from '../models/Project.js';
+import  RawCommit from '../models/RawCommit.js';
+import  Project from '../models/Project.js';
 
 
 
