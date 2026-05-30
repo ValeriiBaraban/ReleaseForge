@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
+import CommitHistory from './CommitHistory';
 
-function Dashboard() {
+const Dashboard = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -17,12 +18,11 @@ function Dashboard() {
   if (!user) return <h2>Loading...</h2>;
 
   const handleLogout = () => {
-    window.location.href = 'https://projectsummer.click/api/auth/logout';
+    window.location.href = 'https://projectsummer.click';
   };
 
   return (
     <div className="dashboard-container">
-      
       <div className="dashboard-header">
         {user.avatar && (
           <img 
@@ -41,6 +41,10 @@ function Dashboard() {
         <p><strong>Email:</strong> {user.email || 'Hidden in GitHub settings'}</p>
         <p><strong>GitHub ID:</strong> {user.githubId}</p>
         <p><strong>Status:</strong> Authorization successful</p>
+      </div>
+
+      <div className="dashboard-forge-section">
+        <CommitHistory />
       </div>
 
       <button 
