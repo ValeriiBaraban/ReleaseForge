@@ -9,9 +9,9 @@ router.get('/github',
 );
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/github/dashboard' }),
+  passport.authenticate('github', { failureRedirect: '/dashboard' }),
   (req, res) => {
-    res.redirect('/github/dashboard');
+    res.redirect('/dashboard');
   }
 );
 
@@ -36,7 +36,7 @@ router.get('/github/callback',
 //         return res.status(500).json({ message: 'error session6 ', error: loginErr.message });
 //       }
       
-//       return res.redirect('/github/dashboard');
+//       return res.redirect('/dashboard');
 //     });
 //   })(req, res, next);
 // });
