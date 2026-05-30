@@ -1,0 +1,125 @@
+.commit-history-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1e1e24; /* Темная сталь */
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  color: #e0e0e0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.commit-history-container h2 {
+  margin-top: 0;
+  color: #f77f00; /* Раскаленный металл */
+  border-bottom: 2px solid #333;
+  padding-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.commit-history-container form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 1.5rem;
+}
+
+.commit-history-container input[type="text"] {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #2b2b36;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.commit-history-container input[type="text"]:focus {
+  outline: none;
+  border-color: #f77f00;
+  box-shadow: 0 0 0 2px rgba(247, 127, 0, 0.2);
+}
+
+.commit-history-container button {
+  padding: 0.75rem 1.5rem;
+  background-color: #d62828;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-weight: bold;
+}
+
+.commit-history-container button:hover:not(:disabled) {
+  background-color: #f77f00;
+  transform: translateY(-1px);
+}
+
+.commit-history-container button:disabled {
+  background-color: #555;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: rgba(214, 40, 40, 0.1);
+  color: #ff4d4d;
+  padding: 1rem;
+  border-left: 4px solid #d62828;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.empty-state {
+  text-align: center;
+  color: #8d8d99;
+  font-style: italic;
+  padding: 1rem;
+}
+
+/* Список коммитов */
+.commits-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.commits-list li {
+  background-color: #2b2b36;
+  border: 1px solid #3a3a44;
+  padding: 1rem 1.25rem;
+  border-radius: 6px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  line-height: 1.5;
+}
+
+.commits-list li:hover {
+  transform: translateX(6px);
+  border-color: #f77f00;
+  cursor: grab;
+}
+
+.commits-list li:active {
+  cursor: grabbing;
+}
+
+.commits-list li strong {
+  color: #fcbf49;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.05rem;
+  margin-right: 0.5rem;
+}
+
+.commits-list li small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #8d8d99;
+  font-size: 0.85rem;
+}
