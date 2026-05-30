@@ -7,9 +7,14 @@ const CommitHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchCommits = async () => {
-      try { 
+ const fetchCommits = async (e) => {
+    e.preventDefault();
+    if (!repoUrl) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
         const response = await fetch(`/api/github/commits?repo=${encodeURIComponent(repoUrl)}`, {
           method: "GET",
           credentials: "include",
@@ -22,18 +27,13 @@ const CommitHistory = () => {
           throw new Error(`Error fetching commits: ${response.statusText}`);
         }
         const data = await response.json();
-        setCommits(data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (repoUrl) {
-      fetchCommits();
+      setCommits(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
-  }, [repoUrl]);
+  };
 
   return (
     <div className="commit-history-container" >
