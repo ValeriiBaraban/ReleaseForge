@@ -15,36 +15,17 @@ router.get('/github/callback',
   }
 );
 
-// router.get("/github/callback", (req, res, next) => {
-//   passport.authenticate("github", (err, user, info) => {
-//     if (err) {
-//       console.error('error passport1', err);
-//       return res.status(500).json({ 
-//         message: 'console error passport2', 
-//         error: err.message || err 
-//       });
-//     }
-//     if (!user) {
-//       console.error('No user found after authentication', info);
-//       return res.status(401).json({ 
-//         message: 'No user found after authentication3', 
-//         info: info || 'No additional info' 
-//       });
-//     }req.logIn(user, (loginErr) => {
-//       if (loginErr) {
-//         console.error('error session5 (req.logIn):', loginErr);
-//         return res.status(500).json({ message: 'error session6 ', error: loginErr.message });
-//       }
-      
-//       return res.redirect('/dashboard');
-//     });
-//   })(req, res, next);
-// });
 
-router.get('/logout', (req, res, next) => {
+
+router.post('/logout', (req, res, next) => {
   req.logout((err) => {
-    if (err) { return next(err); }
-    res.redirect('/');
+    if (err) return next(err); 
+
+    req.session.destroy(() => {
+      res.clearCookie('connect.sid', { path: '/' });
+      
+      return res.status(200).json({ message: 'Logged out successfully' });
+    });
   });
 });
 
