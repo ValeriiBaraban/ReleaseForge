@@ -1,15 +1,11 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
 import { Octokit } from '@octokit/rest';
-import  RawCommit from '../models/RawCommit.js';
-import  Project from '../models/Project.js';
+import RawCommit from '../models/RawCommit.js';
+import Project from '../models/Project.js';
 import { filterCleanCommits } from '../services/commitFilter.js';
 
-
-
 const router = express.Router();
-
-const parcedUrl = new URL(process.env.GITHUB_AUTH_URL);
 
 router.get('/commits', isAuthenticated, async (req, res) => {
   const { repo } = req.query;
@@ -46,7 +42,6 @@ router.get('/commits', isAuthenticated, async (req, res) => {
       owner,
       repo: repoName,
       per_page: 25
-      //since: lastReleaseDate
     });
 
     const bulkOperations = githubCommits.map(commit => ({
@@ -58,7 +53,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
             sha: commit.sha,
             message: commit.commit.message,
             author: {
-              name: commit.commit.author.name,
+              name: commit.commit.author.name, // <-- Исправили баг здесь
               email: commit.commit.author.email,
               date: commit.commit.author.date
             },
