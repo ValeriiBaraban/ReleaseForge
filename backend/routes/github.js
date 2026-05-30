@@ -58,7 +58,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
             sha: commit.sha,
             message: commit.commit.message,
             author: {
-              name: commit.author.name,
+              name: commit.commit.author.name,
               email: commit.commit.author.email,
               date: commit.commit.author.date
             },
