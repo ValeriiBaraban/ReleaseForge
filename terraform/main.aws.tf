@@ -284,7 +284,6 @@ resource "aws_cloudfront_distribution" "website" {
     target_origin_id       = "ec2-backend-origin"
     viewer_protocol_policy = "redirect-to-https"
 
-    # Для API разрешаем мутирующие методы
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
 
@@ -456,6 +455,21 @@ resource "aws_ssm_parameter" "encryption_key" {
   value       = random_id.encryption_key.hex
   lifecycle {
     ignore_changes = [value]
+  }
+}
+
+resource "aws_ssm_parameter" "github_auth_url" {
+  name  = "/releaseforge/prod/GITHUB_AUTH_URL" 
+  type  = "String"
+  value = var.github_url
+
+   lifecycle {
+    ignore_changes = [value]
+  }
+
+  tags = {
+    Environment = "Production"
+    Project     = "ReleaseForge"
   }
 }
 
