@@ -4,7 +4,7 @@ import './CommitHistory.css';
 const CommitHistory = () => {
   const [commits, setCommits] = useState([]);
   const [repoUrl, setRepoUrl] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
  const fetchCommits = async (e) => {
