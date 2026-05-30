@@ -41,7 +41,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
       await project.save();
     }
 
-    const { data } = await octokit.repos.listCommits({
+    const { data: githubCommits } = await octokit.repos.listCommits({
       owner,
       repo: repoName,
       per_page: 25
