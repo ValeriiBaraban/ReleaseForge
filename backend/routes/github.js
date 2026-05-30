@@ -59,8 +59,8 @@ router.get('/commits', isAuthenticated, async (req, res) => {
             message: commit.commit.message,
             author: {
               name: commit.author.name,
-              email: commit.author.email,
-              date: commit.author.date
+              email: commit.commit.author.email,
+              date: commit.commit.author.date
             },
             githubRawData: commit,
             isProcessed: false
