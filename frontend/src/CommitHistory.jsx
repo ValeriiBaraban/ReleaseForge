@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import './CommitHistory.css';
 
 const CommitHistory = () => {
   const [commits, setCommits] = useState([]);
@@ -65,3 +66,6 @@ const CommitHistory = () => {
     </div>
   );
 }
+
+export default CommitHistory;
+
