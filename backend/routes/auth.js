@@ -9,9 +9,9 @@ router.get('/github',
 );
 
 router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: `${process.env.CLIENT_URL}/` }),
+  passport.authenticate('github', { failureRedirect: '/github/dashboard' }),
   (req, res) => {
-    res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+    res.redirect('/github/dashboard');
   }
 );
 
@@ -36,7 +36,7 @@ router.get('/github/callback',
 //         return res.status(500).json({ message: 'error session6 ', error: loginErr.message });
 //       }
       
-//       return res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+//       return res.redirect('/github/dashboard');
 //     });
 //   })(req, res, next);
 // });
@@ -44,7 +44,7 @@ router.get('/github/callback',
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {
     if (err) { return next(err); }
-    res.redirect(`${process.env.CLIENT_URL}/`);
+    res.redirect('/');
   });
 });
 
