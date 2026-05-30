@@ -31,4 +31,4 @@ const rawCommitSchema = new mongoose.Schema({
 rawCommitSchema.index({ projectId: 1, sha: 1 }, { unique: true });
 rawCommitSchema.index({ message: 'text' });
 
-export const RawCommit = mongoose.model('RawCommit', rawCommitSchema);
+export default mongoose.model('RawCommit', rawCommitSchema);
