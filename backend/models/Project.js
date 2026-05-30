@@ -23,4 +23,6 @@ const projectSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+projectSchema.index({ userId: 1, repoUrl: 1 }, { unique: true });
+
 export default mongoose.model('Project', projectSchema);

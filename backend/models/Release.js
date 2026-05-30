@@ -1,34 +1,34 @@
 import mongoose from 'mongoose';
 
-const changelogItemSchema = new mongoose.Schema({
-  commitHash: { type: String, required: true },
-  message: { type: String, required: true },
-  author: { type: String },
-  category: {
-    type: String,
-    enum: ['Feature', 'Fix', 'Chore', 'Uncategorized'],
-    default: 'Uncategorized'
-  }
-});
-
 const releaseSchema = new mongoose.Schema({
   projectId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true,
-    index: true 
+    required: true
   },
   version: {
     type: String,
     required: true,
     trim: true
   },
+  title: {
+    type: String,
+    required: true
+  },
+  changelogMarkdown: {
+    type: String,
+    required: true
+  },
+  includedCommits: [{
+    type: String
+  }],
   status: {
     type: String,
     enum: ['draft', 'published'],
     default: 'draft'
-  },
-  changelog: [changelogItemSchema]
+  }
 }, { timestamps: true });
 
-export default mongoose.model('Release', releaseSchema);
+releaseSchema.index({ projectId: 1, version: 1 }, { unique: true });
+
+export const Release = mongoose.model('Release', releaseSchema);
