@@ -7,6 +7,7 @@ import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import mongoose from 'mongoose';
 import User from './models/User.js';
+import githubRoutes from './routes/github.js';
 
 import authRoutes from './routes/auth.js'; 
 
@@ -52,6 +53,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/api/github', githubRoutes);
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
