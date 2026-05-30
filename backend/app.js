@@ -14,7 +14,12 @@ if (!process.env.MONGO_URI) {
   console.error('mongo uri is not set');
   process.exit(1);
 }
-const decodedMongoUri = process.env.MONGO_URI; // Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
+let decodedMongoUri = process.env.MONGO_URI;
+
+if(!decodedMongoUri.startsWith('mongodb') || decodedMongoUri.includes('base64')) {
+  decodedMongoUri = Buffer.from(process.env.MONGO_URI, 'base64').toString('utf-8');
+}
+
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -33,7 +38,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   store: mongoStore.create({
-    mongoUrl: decodedMongoUri 
+    mongoUrl: decodedMongoUri,
+    collectionName: 'sessions'
   }),
   cookie: {
     //TODO: return secure to true when deploying to production with HTTPS
