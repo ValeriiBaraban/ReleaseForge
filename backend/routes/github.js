@@ -3,6 +3,7 @@ import { isAuthenticated } from '../middlewares/authCheck.js';
 import { Octokit } from '@octokit/rest';
 import  RawCommit from '../models/RawCommit.js';
 import  Project from '../models/Project.js';
+import { filterCleanCommits } from '../services/commitFilter.js';
 
 
 
@@ -45,6 +46,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
       owner,
       repo: repoName,
       per_page: 25
+      //since: lastReleaseDate
     });
 
     const bulkOperations = githubCommits.map(commit => ({
@@ -56,9 +58,9 @@ router.get('/commits', isAuthenticated, async (req, res) => {
             sha: commit.sha,
             message: commit.commit.message,
             author: {
-              name: commit.commit.author.name,
-              email: commit.commit.author.email,
-              date: commit.commit.author.date
+              name: commit.author.name,
+              email: commit.author.email,
+              date: commit.author.date
             },
             githubRawData: commit,
             isProcessed: false
@@ -76,7 +78,8 @@ router.get('/commits', isAuthenticated, async (req, res) => {
       .sort({ 'author.date': -1 })
       .limit(25);
 
-    res.json(savedCommits);
+    const cleanCommits = filterCleanCommits(savedCommits);
+    res.json(cleanCommits);
   } catch (error) {
     console.error('GitHub API Error:', error);
     res.status(500).json({ error: 'Failed to fetch commits from GitHub' });
