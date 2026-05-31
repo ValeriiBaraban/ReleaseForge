@@ -59,7 +59,7 @@ router.post('/generate', isAuthenticated, async (req, res) => {
         title: title, 
         content: formattedMarkdown 
       },
-      { new: true, upsert: true } 
+      { returnDocument: 'after', upsert: true } 
     );
 
     res.json(newRelease);
