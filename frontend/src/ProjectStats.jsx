@@ -26,7 +26,7 @@ const ProjectStats = ({projectId}) => {
         setLoading(false);
       }
     };
-    featchStats();
+    fetchStats();
   }, [projectId]);
 
   if (loading) return <div>Loading...</div>;
