@@ -28,7 +28,7 @@ const ReleaseGenerator = ({ projectId }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'error generating release');
 
-      setContent(data.changelogMarkdown);
+      setContent(data.content);
     } catch (err) {
       setError(err.message);
     } finally {
