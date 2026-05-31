@@ -72,4 +72,6 @@ async function classifyCommitsWithAI(commits) {
   }
 }
 
-module.exports = { classifyCommitsWithAI };
+//module.exports = { classifyCommitsWithAI };
+
+export default classifyCommitsWithAI;
