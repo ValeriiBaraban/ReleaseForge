@@ -3,7 +3,7 @@ import { isAuthenticated } from '../middlewares/authCheck.js';
 import Project from '../models/Project.js';
 import RawCommit from '../models/RawCommit.js';
 import { Release } from '../models/Release.js';
-import classifyCommitsWithAI from '../services/aiService.js'; // <-- Импортируем твою функцию
+import classifyCommitsWithAI from '../services/aiService.js';
 import { filterCleanCommits } from '../services/commitFilter.js';
 
 const router = express.Router();
@@ -26,14 +26,12 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       return res.status(400).json({ error: 'No clean commits found to process for this release' });
     }
 
-    // 1. Получаем строгий массив JSON от твоей схемы Gemini
     const aiResultArray = await classifyCommitsWithAI(cleanCommits);
 
     if (!aiResultArray || aiResultArray.length === 0) {
       return res.status(500).json({ error: 'AI returned empty result' });
     }
 
-    // 2. Формируем красивый Markdown из полученного JSON-массива
     let formattedMarkdown = `## Релиз ${version} — ${title}\n\n`;
 
     const features = aiResultArray.filter(c => c.category === 'Feature');
@@ -55,7 +53,6 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       chores.forEach(c => formattedMarkdown += `- ${c.cleanText} (${c.hash.substring(0, 7)})\n`);
     }
 
-    // 3. Сохраняем в базу данных готовый текст
     const newRelease = new Release({
       projectId: project._id,
       version,
