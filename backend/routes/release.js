@@ -53,16 +53,16 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       chores.forEach(c => formattedMarkdown += `- ${c.cleanText} (${c.hash.substring(0, 7)})\n`);
     }
 
-    const newRelease = new Release({
-      projectId: project._id,
-      version,
-      title,
-      changelogMarkdown: formattedMarkdown,
-      includedCommits: cleanCommits.map(c => c.sha),
-      status: 'published'
-    });
+    const newRelease = await Release.findOneAndUpdate(
+      { projectId: projectId, version: version }, 
+      { 
+        title: title, 
+        content: formattedMarkdown 
+      },
+      { new: true, upsert: true } 
+    );
 
-    await newRelease.save();
+    res.json(newRelease);
 
     await RawCommit.updateMany(
       { projectId: project._id, sha: { $in: cleanCommits.map(c => c.sha) } },
