@@ -76,30 +76,7 @@ router.post('/generate', isAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/:projectId', isAuthenticated, async (req, res) => {
-  try {
-    const releases = await Release.find({ projectId: req.params.projectId }).sort({ createdAt: -1 });
-    res.json(releases);
-  } catch (error) {
-    console.error('Fetch Releases Error:', error);
-    res.status(500).json({ error: 'Failed to fetch releases' });
-  }
-});
-
-router.get('/release/:releaseId', isAuthenticated, async (req, res) => {
-  try {
-    const release = await Release.findById(req.params.releaseId).populate('projectId'); 
-    if (!release) return res.status(404).json({ error: 'Release not found' });
-    
-    res.json(release);
-  } catch (error) {
-    console.error('Fetch Release Error:', error);
-    res.status(500).json({ error: 'Failed to fetch release details' });
-  }
-});
-
-
-  router.get('/:projectId/stats', isAuthenticated, async (req, res) => {
+router.get('/:projectId/stats', isAuthenticated, async (req, res) => {
     try {
       const projectId = new mongoose.Types.ObjectId(req.params.projectId);
       const stats = await Release.aggregate([
@@ -123,4 +100,29 @@ router.get('/release/:releaseId', isAuthenticated, async (req, res) => {
     }
   });
 
+
+router.get('/:projectId', isAuthenticated, async (req, res) => {
+  try {
+    const releases = await Release.find({ projectId: req.params.projectId }).sort({ createdAt: -1 });
+    res.json(releases);
+  } catch (error) {
+    console.error('Fetch Releases Error:', error);
+    res.status(500).json({ error: 'Failed to fetch releases' });
+  }
+});
+
+router.get('/release/:releaseId', isAuthenticated, async (req, res) => {
+  try {
+    const release = await Release.findById(req.params.releaseId).populate('projectId'); 
+    if (!release) return res.status(404).json({ error: 'Release not found' });
+    
+    res.json(release);
+  } catch (error) {
+    console.error('Fetch Release Error:', error);
+    res.status(500).json({ error: 'Failed to fetch release details' });
+  }
+});
+
+
+  
 export default router;
