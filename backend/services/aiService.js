@@ -1,5 +1,3 @@
-//npm install @google/generative-ai
-
 import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -38,7 +36,7 @@ async function classifyCommitsWithAI(commits) {
 
   const simplifiedCommits = commits.map(c => ({
     sha: c.sha,
-    message: c.commit.message.split('\n')[0] 
+    message: c.message ? c.message.split('\n')[0] : "No message"
   }));
 
   const prompt = `
@@ -62,16 +60,12 @@ async function classifyCommitsWithAI(commits) {
 
   try {
     const result = await model.generateContent(prompt);
-    
     const parsedResponse = JSON.parse(result.response.text());
     return parsedResponse;
-    
   } catch (error) {
     console.error("error ai", error);
     return []; 
   }
 }
-
-//module.exports = { classifyCommitsWithAI };
 
 export default classifyCommitsWithAI;
