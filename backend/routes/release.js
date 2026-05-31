@@ -57,7 +57,8 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       { projectId: projectId, version: version }, 
       { 
         title: title, 
-        content: formattedMarkdown 
+        content: formattedMarkdown,
+        includedCommits: cleanCommits.map(c => c._id)
       },
       { returnDocument: 'after', upsert: true } 
     );

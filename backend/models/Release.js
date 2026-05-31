@@ -26,7 +26,12 @@ const releaseSchema = new mongoose.Schema({
     type: String,
     enum: ['draft', 'published'],
     default: 'draft'
-  }
+  },
+  content:
+  {
+      type: String,
+      required: false
+  },
 }, { timestamps: true });
 
 releaseSchema.index({ projectId: 1, version: 1 }, { unique: true });
