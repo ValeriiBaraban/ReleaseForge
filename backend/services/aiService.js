@@ -47,10 +47,14 @@ async function classifyCommitsWithAI(commits) {
 
   try {
     const result = await model.generateContent(prompt);
-    const parsedResponse = JSON.parse(result.response.text());
+    let rawText = result.response.text();
+    
+    rawText = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+    
+    const parsedResponse = JSON.parse(rawText);
     return parsedResponse;
   } catch (error) {
-    console.error("error ai", error);
+    console.error("error ai details:", error);
     return []; 
   }
 }
