@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReleaseGenerator from './ReleaseGenerator';
-
+import ProjectStats from './ProjectStats';
 import './CommitHistory.css';
 
 const CommitHistory = () => {
@@ -55,8 +55,13 @@ const CommitHistory = () => {
         </button>
       </form>
 
-      {projectId && <ReleaseGenerator projectId={projectId} />}
-      
+      {projectId &&(
+        <div>
+          <ProjectStats projectId={projectId} />
+          <ReleaseGenerator projectId={projectId} />
+        </div>
+      )}
+
       {error && <p className="error-message">{error}</p>}
       <div className="commits-list">
         {commits.length > 0 ? (

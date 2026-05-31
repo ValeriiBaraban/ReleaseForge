@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import './Dashboard.css';
 import CommitHistory from './CommitHistory';
-import ProjectStats from './ProjectStats';
-
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
-  const { projectId } = useParams();
 
   useEffect(() => {
     fetch('/api/auth/current-user', { credentials: 'include' })
@@ -48,9 +44,7 @@ const Dashboard = () => {
       </div>
 
       <div className="dashboard-forge-section">
-        <ProjectStats projectId={projectId} />
-        <CommitHistory projectId={projectId}/>
-        
+        <CommitHistory />
       </div>
 
       <button 
