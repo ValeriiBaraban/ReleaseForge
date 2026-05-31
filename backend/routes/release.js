@@ -1,7 +1,7 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
 import  Project  from '../models/Project.js';
-import { RawCommit } from '../models/RawCommit.js';
+import  RawCommit  from '../models/RawCommit.js';
 import { Release } from '../models/Release.js';
 import  generateReleaseNotes  from '../services/aiService.js'; 
 import { filterCleanCommits } from '../services/commitFilter.js';
