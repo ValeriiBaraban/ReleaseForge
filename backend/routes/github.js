@@ -41,7 +41,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
     const { data: githubCommits } = await octokit.repos.listCommits({
       owner,
       repo: repoName,
-      per_page: 25
+      per_page: 30
     });
 
     const bulkOperations = githubCommits.map(commit => ({
@@ -53,7 +53,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
             sha: commit.sha,
             message: commit.commit.message,
             author: {
-              name: commit.commit.author.name, // <-- Исправили баг здесь
+              name: commit.commit.author.name,
               email: commit.commit.author.email,
               date: commit.commit.author.date
             },
@@ -71,7 +71,7 @@ router.get('/commits', isAuthenticated, async (req, res) => {
 
     const savedCommits = await RawCommit.find({ projectId: project._id })
       .sort({ 'author.date': -1 })
-      .limit(25);
+      .limit(30);
 
     const cleanCommits = filterCleanCommits(savedCommits);
     res.json(cleanCommits);
