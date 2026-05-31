@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { isAuthenticated } from '../middlewares/authCheck.js';
 import Project from '../models/Project.js';
 import RawCommit from '../models/RawCommit.js';
@@ -96,5 +97,30 @@ router.get('/release/:releaseId', isAuthenticated, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch release details' });
   }
 });
+
+
+  router.get('/:projectId/stats', isAuthenticated, async (req, res) => {
+    try {
+      const projectId = new mongoose.Types.ObjectId(req.params.projectId);
+      const stats = await Release.aggregate([
+        { $match: { projectId: projectId } },
+        { $project: { commitCount: { $size: "$includedCommits" } } },
+        { 
+          $group: { 
+            _id: null, 
+            totalReleases: { $sum: 1 }, 
+            totalCommitUsed: { $sum: "$commitCount" } 
+          } 
+        }
+      ]);
+      if (stats.length === 0) {
+        return res.json({ totalReleases: 0, totalCommitUsed: 0 });
+      }
+      res.json(stats[0]);
+    } catch (error) {
+      console.error('Fetch Release Stats Error:', error);
+      res.status(500).json({ error: 'Failed to fetch release statistics' });  
+    }
+  });
 
 export default router;
