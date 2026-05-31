@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import './ProjectStats.css';
 
-console.log("Widget received projectId:", projectId);
 
 const ProjectStats = ({ projectId }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
 
+  console.log("Widget received projectId:", projectId);
+
+  
   useEffect(() => {
     if (!projectId) return;
 
