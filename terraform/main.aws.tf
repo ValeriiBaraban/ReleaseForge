@@ -459,7 +459,7 @@ resource "aws_ssm_parameter" "encryption_key" {
 }
 
 resource "aws_ssm_parameter" "github_auth_url" {
-  name  = "/releaseforge/prod/GITHUB_AUTH_URL" 
+  name  = "/releaseforge/backend/GITHUB_AUTH_URL" 
   type  = "String"
   value = var.github_url
 
@@ -474,8 +474,8 @@ resource "aws_ssm_parameter" "github_auth_url" {
 }
 
 resource "aws_ssm_parameter" "gemini_api_key" {
-  name  = "/releaseforge/prod/GEMINI_API_KEY" 
-  type  = "String"
+  name  = "/releaseforge/backend/GEMINI_API_KEY" 
+  type  = "SecureString"
   value = "enter_key_here"
 
    lifecycle {
