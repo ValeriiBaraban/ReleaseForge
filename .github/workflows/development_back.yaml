@@ -38,7 +38,7 @@ jobs:
           GH_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_secret" --with-decryption --query "Parameter.Value" --output text)
           SESS_SECRET=$(aws ssm get-parameter --name "/releaseforge/backend/session_secret" --with-decryption --query "Parameter.Value" --output text)
           ENCRYPTION_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/ENCRYPTION_KEY" --with-decryption --query "Parameter.Value" --output text)
-          GITHUB_AUTH_URL=$(aws ssm get-parameter --name "/releaseforge/prod/GITHUB_AUTH_URL" --query "Parameter.Value" --output text)
+          GITHUB_AUTH_URL=$(aws ssm get-parameter --name "/releaseforge/backend/GITHUB_AUTH_URL" --query "Parameter.Value" --output text)
           GEMINI_API_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/GEMINI_API_KEY" --with-decryption --query "Parameter.Value" --output text)
 
 
@@ -98,7 +98,7 @@ jobs:
             echo "GITHUB_AUTH_URL=$GITHUB_AUTH_URL" >> .env
             echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
 
-            
+
             cat << 'EOF' > nginx.conf
             server {
                 listen 80;
