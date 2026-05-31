@@ -32,24 +32,24 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       return res.status(500).json({ error: 'AI returned empty result' });
     }
 
-    let formattedMarkdown = `## Релиз ${version} — ${title}\n\n`;
+    let formattedMarkdown = `## Release ${version} — ${title}\n\n`;
 
     const features = aiResultArray.filter(c => c.category === 'Feature');
     const fixes = aiResultArray.filter(c => c.category === 'Fix');
     const chores = aiResultArray.filter(c => c.category === 'Chore');
 
     if (features.length > 0) {
-      formattedMarkdown += `### 🚀 Новые функции\n`;
+      formattedMarkdown += `### new function\n`;
       features.forEach(c => formattedMarkdown += `- ${c.cleanText} (${c.hash.substring(0, 7)})\n`);
       formattedMarkdown += `\n`;
     }
     if (fixes.length > 0) {
-      formattedMarkdown += `### 🐛 Исправления ошибок\n`;
+      formattedMarkdown += `### bug fixes\n`;
       fixes.forEach(c => formattedMarkdown += `- ${c.cleanText} (${c.hash.substring(0, 7)})\n`);
       formattedMarkdown += `\n`;
     }
     if (chores.length > 0) {
-      formattedMarkdown += `### 💅 Техническое обслуживание\n`;
+      formattedMarkdown += `### maintenance\n`;
       chores.forEach(c => formattedMarkdown += `- ${c.cleanText} (${c.hash.substring(0, 7)})\n`);
     }
 
