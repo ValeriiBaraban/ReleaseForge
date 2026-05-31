@@ -1,36 +1,12 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-const commitSchema = {
-  type: SchemaType.ARRAY,
-  description: "List of commits with categories and clean text",
-  items: {
-    type: SchemaType.OBJECT,
-    properties: {
-      hash: {
-        type: SchemaType.STRING,
-        description: "Commit hash",
-      },
-      category: {
-        type: SchemaType.STRING,
-        description: "Strictly one of the values: Feature, Fix, Chore",
-      },
-      cleanText: {
-        type: SchemaType.STRING,
-        description: "Human-readable description of changes",
-      },
-    },
-    required: ["hash", "category", "cleanText"],
-  },
-};
-
 async function classifyCommitsWithAI(commits) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-latest",
+    model: "gemini-1.5-pro",
     generationConfig: {
       responseMimeType: "application/json",
-      responseSchema: commitSchema,
     },
   });
 
@@ -40,22 +16,33 @@ async function classifyCommitsWithAI(commits) {
   }));
 
   const prompt = `
-   You are a technical writer. Analyze the list of git commits.
-      Your task:
+    You are a Senior Technical Writer and Developer Advocate. Your task is to analyze a list of raw Git commit messages and prepare them for a professional public Release Notes changelog.
 
-      Assign a category to each commit:
-      Feature — for new functionality
-      Fix — for bug fixes
-      Chore — for configuration, refactoring, dependencies, and miscellaneous maintenance tasks
-      Field cleanText — rewrite the technical or poorly written commit message into a clear business-oriented description in Russian.
+    Return a STRICT JSON array of objects. Do not wrap the JSON in markdown blocks (e.g., no \`\`\`json).
+    
+    Each object MUST have exactly these three keys:
+    - "hash" (string): The exact commit sha provided.
+    - "category" (string): You must classify the commit into STRICTLY ONE of the following three categories:
+        * "Feature": New user-facing capabilities, major enhancements, UI/UX additions, or new API endpoints.
+        * "Fix": Bug resolutions, error handling, layout corrections, or performance improvements.
+        * "Chore": Code refactoring, dependency updates, CI/CD pipeline changes, documentation, or internal maintenance.
+    - "cleanText" (string): Rewrite the technical, abbreviated, or poorly written commit message into a clear, business-oriented description.
+    
+    Rules for "cleanText":
+    1. Output MUST be in professional English.
+    2. Use past tense (e.g., "Added...", "Fixed...", "Updated...", "Refactored...").
+    3. Remove issue tracker numbers, internal jargon, or WIP prefixes.
+    4. Expand vague messages into sensible descriptions (e.g., instead of "fix auth", write "Fixed user authentication issue").
+    5. If a message is complete gibberish or empty, write "Internal system updates".
 
-      Examples:
+    Examples of transformation:
+    - Input: "feat(auth): add google oauth login" -> Output: "Added Google OAuth login capability" (Category: Feature)
+    - Input: "fix button margin on mobile" -> Output: "Fixed button margins on mobile devices" (Category: Fix)
+    - Input: "bump react to v18" -> Output: "Updated frontend dependencies" (Category: Chore)
+    - Input: "WIP refactoring" -> Output: "Refactored internal architecture" (Category: Chore)
 
-      "fix css margin" → "Fixed interface spacing issues"
-      "Merge pull request #45" → "Codebase updated"
-
-      Commits to process:
-          ${JSON.stringify(simplifiedCommits)}
+    Commits to process:
+    ${JSON.stringify(simplifiedCommits)}
   `;
 
   try {
