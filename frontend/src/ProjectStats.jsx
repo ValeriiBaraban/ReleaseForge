@@ -8,11 +8,11 @@ const ProjectStats = ({ projectId }) => {
 
   console.log("Widget received projectId:", projectId);
 
-  
+
   useEffect(() => {
     if (!projectId) return;
 
-    fetch(`/api/releases/stats/${projectId}`, {
+    fetch(`/api/releases/${projectId}/stats`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => {
