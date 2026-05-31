@@ -1,37 +1,26 @@
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import './ProjectStats.css';
 
-
-const ProjectStats = ({projectId}) => {
+const ProjectStats = ({ projectId }) => {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch(`/api/releases/stats/${projectId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          credentials: 'include'
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to fetch stats');
-        setStats(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
+    if (!projectId) return;
+
+    fetch(`/api/releases/stats/${projectId}`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch stats');
+        return res.json();
+      })
+      .then(data => setStats(data))
+      .catch(err => setError(err.message));
   }, [projectId]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+  if (error) return <div className="stats-error">Error: {error}</div>;
+  if (!stats) return <div className="stats-loading">Loading stats...</div>;
   return (
     <div className="project-stats-container">
       <h3 className="stats-title">Project Impact</h3>
