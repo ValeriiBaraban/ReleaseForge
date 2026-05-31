@@ -4,10 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function classifyCommitsWithAI(commits) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro",
-    generationConfig: {
-      responseMimeType: "application/json",
-    },
+    model: "gemini-pro", 
   });
 
   const simplifiedCommits = commits.map(c => ({
