@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ReleaseGenerator from './ReleaseGenerator';
+
 import './CommitHistory.css';
 
 const CommitHistory = () => {
@@ -34,6 +36,8 @@ const CommitHistory = () => {
       setLoading(false);
     }
   };
+  
+  const projectId = commits.length > 0 ? commits[0].projectId : null;
 
   return (
     <div className="commit-history-container" >
@@ -50,6 +54,9 @@ const CommitHistory = () => {
           {loading ? 'Forging data...' : 'Load commits...'}
         </button>
       </form>
+
+      {projectId && <ReleaseGenerator projectId={projectId} />}
+      
       {error && <p className="error-message">{error}</p>}
       <div className="commits-list">
         {commits.length > 0 ? (
