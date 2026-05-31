@@ -62,14 +62,12 @@ router.post('/generate', isAuthenticated, async (req, res) => {
       { returnDocument: 'after', upsert: true } 
     );
 
-    res.json(newRelease);
-
     await RawCommit.updateMany(
       { projectId: project._id, sha: { $in: cleanCommits.map(c => c.sha) } },
       { $set: { isProcessed: true } }
     );
 
-    res.status(201).json(newRelease);
+    return res.status(201).json(newRelease);
   } catch (error) {
     console.error('Release Generation Error:', error);
     res.status(500).json({ error: 'Failed to generate and save release' });
