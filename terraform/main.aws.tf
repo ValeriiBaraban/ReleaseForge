@@ -473,6 +473,21 @@ resource "aws_ssm_parameter" "github_auth_url" {
   }
 }
 
+resource "aws_ssm_parameter" "gemini_api_key" {
+  name  = "/releaseforge/prod/GEMINI_API_KEY" 
+  type  = "String"
+  value = "enter_key_here"
+
+   lifecycle {
+    ignore_changes = [value]
+  }
+
+  tags = {
+    Environment = "Production"
+    Project     = "ReleaseForge"
+  }
+}
+
 //allow read ssm parameter for EC2 instance (for deployment and backend use) - TODO: attach policy to EC2 role
 # resource "aws_iam_policy" "ssm_read_policy" {
 #   name        = "ReleaseForgeSSMRead"
