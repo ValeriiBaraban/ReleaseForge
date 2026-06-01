@@ -61,8 +61,8 @@ const CommitHistory = () => {
 
       {projectId && (
         <div>
-          <CommitSearch projectId={projectId} />
           <ProjectStats projectId={projectId} />
+          <CommitSearch projectId={projectId} />
           <ReleaseGenerator projectId={projectId} />
         </div>
       )}
