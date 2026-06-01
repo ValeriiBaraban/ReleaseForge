@@ -16,7 +16,11 @@ export default function CommitSearch({ projectId }) {
     setHasSearched(true);
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+      //TODO: Use environment variable for API base URL
+
+      
+      //const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+      const API_BASE_URL = 'https://projectsummer.click';
 
       const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}/commits/search?q=${query}`, {
         method: 'GET',
