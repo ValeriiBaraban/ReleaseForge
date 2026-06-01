@@ -16,9 +16,10 @@ router.get('/commits', isAuthenticated, async (req, res) => {
 
   try {
     const octokit = new Octokit({ auth: req.user.accessToken });
-    const repoPath = repo.replace('https://github.com/', '').split('/');
-    const owner = repoPath[0];
-    const repoName = repoPath[1];
+    let cleanRepoUrl = repo.trim().replace(/\/$/, '').replace(/\.git$/, '');
+    const repoPath = cleanRepoUrl.replace('https://github.com/', '').split('/');
+    const owner = repoPath[0]?.trim().toLowerCase();
+    const repoName = repoPath[1]?.trim().toLowerCase();
 
     if (!owner || !repoName) {
       return res.status(400).json({ error: 'Invalid repository format' });
