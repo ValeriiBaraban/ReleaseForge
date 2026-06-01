@@ -46,7 +46,7 @@ const Dashboard = () => {
         </p>
       </div>
       <div>
-        <CommitSearch />
+        <CommitSearch projectId={project._id}/>
       </div>
       <div className="dashboard-forge-section">
         <CommitHistory />
