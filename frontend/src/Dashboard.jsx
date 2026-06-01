@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import CommitHistory from './CommitHistory';
-import CommitSearch from './CommitSearch';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -44,9 +43,6 @@ const Dashboard = () => {
         <p>
           <strong>Status:</strong> Authorization successful
         </p>
-      </div>
-      <div>
-        <CommitSearch projectId={project._id}/>
       </div>
       <div className="dashboard-forge-section">
         <CommitHistory />

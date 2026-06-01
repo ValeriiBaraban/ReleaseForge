@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import ReleaseGenerator from './ReleaseGenerator';
 import ProjectStats from './ProjectStats';
 import './CommitHistory.css';
+import { commitSearch } from './CommitSearch';
 
 const CommitHistory = () => {
   const [commits, setCommits] = useState([]);
-  const [repoUrl, setRepoUrl] = useState("");
+  const [repoUrl, setRepoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
- const fetchCommits = async (e) => {
+  const fetchCommits = async (e) => {
     e.preventDefault();
     if (!repoUrl) return;
 
@@ -17,18 +18,21 @@ const CommitHistory = () => {
     setError(null);
 
     try {
-        const response = await fetch(`/api/github/commits?repo=${encodeURIComponent(repoUrl)}`, {
-          method: "GET",
-          credentials: "include",
+      const response = await fetch(
+        `/api/github/commits?repo=${encodeURIComponent(repoUrl)}`,
+        {
+          method: 'GET',
+          credentials: 'include',
           headers: {
-            "Content-Type": "application/json"
-          } 
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error fetching commits: ${response.statusText}`);
+            'Content-Type': 'application/json',
+          },
         }
-        const data = await response.json();
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error fetching commits: ${response.statusText}`);
+      }
+      const data = await response.json();
       setCommits(data);
     } catch (error) {
       setError(error.message);
@@ -36,16 +40,16 @@ const CommitHistory = () => {
       setLoading(false);
     }
   };
-  
+
   const projectId = commits.length > 0 ? commits[0].projectId : null;
 
   return (
-    <div className="commit-history-container" >
+    <div className="commit-history-container">
       <h2>Commit History</h2>
-        <form onSubmit={fetchCommits}>
-        <input 
-          type="text" 
-          placeholder="https://github.com/username/repository" 
+      <form onSubmit={fetchCommits}>
+        <input
+          type="text"
+          placeholder="https://github.com/username/repository"
           value={repoUrl}
           onChange={(e) => setRepoUrl(e.target.value)}
           required
@@ -55,8 +59,9 @@ const CommitHistory = () => {
         </button>
       </form>
 
-      {projectId &&(
+      {projectId && (
         <div>
+          <CommitSearch projectId={projectId} />
           <ProjectStats projectId={projectId} />
           <ReleaseGenerator projectId={projectId} />
         </div>
@@ -69,15 +74,23 @@ const CommitHistory = () => {
             {commits.map((commit) => (
               <li key={commit.sha}>
                 <p>{commit.message}</p>
-                <p>{commit.author.name} - {new Date(commit.author.date).toLocaleString()}</p>
+                <p>
+                  {commit.author.name} -{' '}
+                  {new Date(commit.author.date).toLocaleString()}
+                </p>
               </li>
             ))}
           </ul>
-        ) : (!loading && <p className="empty-state">No commits found. Please check the repository URL.</p>)}
+        ) : (
+          !loading && (
+            <p className="empty-state">
+              No commits found. Please check the repository URL.
+            </p>
+          )
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default CommitHistory;
-
