@@ -37,7 +37,7 @@ router.put('/projects/:projectId', isAuthenticated, async (req, res) => {
     const updatedProject = await Project.findOneAndUpdate(
       { _id: req.params.projectId, userId: req.user._id },
       { name, description, repoUrl },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     if (!updatedProject) {
       return res.status(404).json({ error: 'Project not found' });
@@ -61,4 +61,3 @@ router.delete('/projects/:projectId', isAuthenticated, async (req, res) => {
 });
 
 export default router;
-//

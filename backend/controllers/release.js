@@ -52,7 +52,7 @@ router.put('/releases/:releaseId', isAuthenticated, async (req, res) => {
       req.params.releaseId,
       
       { version, title, changelogMarkdown, includedCommits, status, content, publishDate: status === 'published' ? new Date() : null },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     if (!updatedRelease) return res.status(404).json({ error: 'Release not found' });
     res.json(updatedRelease);
@@ -72,4 +72,3 @@ router.delete('/releases/:releaseId', isAuthenticated, async (req, res) => {
 });
 
 export default router;
-//
