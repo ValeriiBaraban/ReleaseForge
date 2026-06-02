@@ -2,7 +2,7 @@ export const isUselessCommit = (message) => {
   const trashPatterns = [
     /^Merge (branch|pull request|remote-tracking branch)/i, //  Merge commits
     /^WIP:?(\s|-|$)/i,                                      //  Work in Progress (WIP, WIP:, WIP -)
-    /^(chore|ci|build|test)(\(|:)/i,                        //  Conventional Commits
+    /^\s*(chore|ci|build|test)($|\(|:|\s)/i,                      //  Conventional Commits
     /^(bump|update) version/i,                              //  upd version
     /^update (readme|docs|documentation)\.?$/i,             //  upd documentation
     /^typo(s)?\b/i,                                         //  upd typo
