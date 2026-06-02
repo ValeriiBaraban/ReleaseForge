@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReleaseGenerator from './ReleaseGenerator';
 import ProjectStats from './ProjectStats';
 import './CommitHistory.css';
-import { commitSearch } from './CommitSearch';
+import  commitSearch  from './CommitSearch';
 
 const CommitHistory = () => {
   const [commits, setCommits] = useState([]);
