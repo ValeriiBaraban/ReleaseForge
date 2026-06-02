@@ -36,4 +36,5 @@ const releaseSchema = new mongoose.Schema({
 
 releaseSchema.index({ projectId: 1, version: 1 }, { unique: true });
 
-export const Release = mongoose.model('Release', releaseSchema);
+export default mongoose.model('Release', releaseSchema);
+

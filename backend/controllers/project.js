@@ -1,6 +1,6 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
-import { Project } from '../models/Project.js';
+import  Project  from '../models/Project.js';
 const router = express.Router();
 
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
-import {  Release } from '../models/Release.js';
+import  Release  from '../models/Release.js';
+import Project  from '../models/Project.js';
 const router = express.Router();
 
 router.get('/projects/:projectId/releases', async (req, res) => {
@@ -15,7 +16,7 @@ router.get('/projects/:projectId/releases', async (req, res) => {
 router.post('/projects/:projectId/releases', isAuthenticated, async (req, res) => { 
   try {
     const { version, title, changelogMarkdown, includedCommits, status, content } = req.body;
-    const project = await Project.findOne({ _id: req.params.projectId, userId: req.user._id });
+    const project = await Project.findOne({ _id: req.params.projectId, user: req.user._id });
     if (!project) return res.status(403).json({ error: 'Access denied' }); 
       
     const newRelease = new Release({

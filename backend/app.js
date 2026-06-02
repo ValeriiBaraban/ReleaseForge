@@ -133,3 +133,5 @@ mongoose.connect(decodedMongoUri)
   .catch((err) => {
     console.error('Error connecting to the database:', err);
   });
+
+  export default app;
