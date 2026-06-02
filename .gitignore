@@ -40,3 +40,5 @@ temp/
 *.tfstate
 *.tfstate.backup
 .terraform.tfstate.lock.info
+researches/
+coverage/
