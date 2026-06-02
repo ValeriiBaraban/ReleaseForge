@@ -58,8 +58,17 @@ const ReleaseGenerator = ({ projectId }) => {
           required 
         />
         <button className="generator-btn" type="submit" disabled={loading}>
+        {loading && <span className="spinner"></span>}
           {loading ? 'Generating...' : 'Create Release Notes'}
         </button>
+        {loading && (
+          <div className="loading-indicator">
+          <p>AI is analyzing your commits...</p>
+            <div className="progress-bar">
+              <div className="progress-fill"></div>
+            </div>
+          </div>
+        )}
       </form>
 
       {error && <p className="generator-error">{error}</p>}
