@@ -6,7 +6,7 @@ import './ReleaseGenerator.css';
 const ReleaseGenerator = ({ projectId }) => {
   const [title, setTitle] = useState('');
   const [version, setVersion] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
 
