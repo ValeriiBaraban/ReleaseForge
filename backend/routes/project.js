@@ -59,4 +59,14 @@ router.delete('/projects/:projectId', isAuthenticated, async (req, res) => {
   }
 });
 
+router.get('/projects/:projectId/commits/search', isAuthenticated, async (req, res) => {
+  try {
+    const { q } = req.query;
+    const projectId = req.params.projectId;
+    res.json({ results: [] }); 
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to search commits' });
+  }
+});
+
 export default router;

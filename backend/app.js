@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import User from './models/User.js';
 import githubRoutes from './routes/github.js';
 import releaseRoutes from './routes/release.js';
+import path from 'path';
 
 
 
@@ -133,5 +134,10 @@ mongoose.connect(decodedMongoUri)
   .catch((err) => {
     console.error('Error connecting to the database:', err);
   });
+
+
+  app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
 
   export default app;

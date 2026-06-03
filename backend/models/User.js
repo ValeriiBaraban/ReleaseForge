@@ -46,26 +46,6 @@ const userSchema = new mongoose.Schema({
   { toObject: { getters: true } }
 );
 
-// userSchema.pre('save', async function (next) {
-//   try {
-//   if (!this.isModified('accessToken') || !this.accessToken) {
-//       return next();
-//     }
-//   } catch (error) {
-//     return next(error);
-//   }
-
-  
-//   try {
-//     const salt = await bcrypt.genSalt(10);
-//     this.accessToken = await bcrypt.hash(this.accessToken, salt);
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-
 const User = mongoose.model('User', userSchema);
 
 export default User;
