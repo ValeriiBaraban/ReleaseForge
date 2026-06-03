@@ -1,6 +1,8 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
 import Project from '../models/Project.js';
+import Release from '../models/Release.js';
+import ChangeLog from '../models/ChangeLog.js';
 const router = express.Router();
 
 router.get('/projects', isAuthenticated, async (req, res) => {
@@ -59,12 +61,36 @@ router.delete('/projects/:projectId', isAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/:projectId/commits/search', async (req, res) => {
+router.get('/:projectId/commits/search', isAuthenticated, async (req, res) => {
   try {
     const { q } = req.query;
-    const projectId = req.params.projectId;
-    res.json({ results: [] }); 
+    const { projectId } = req.params;
+
+    if (!q || q.trim() === '') {
+      return res.json({ results: [] });
+    }
+
+    const releases = await Release.find({ project: projectId });
+    
+    if (releases.length === 0) {
+      return res.json({ results: [] });
+    }
+
+    const releaseIds = releases.map(release => release._id);
+
+    
+    const searchResults = await ChangeLog.find({
+      release: { $in: releaseIds },
+      $or: [
+        { text: { $regex: q, $options: 'i' } },
+        { originalCommitMessage: { $regex: q, $options: 'i' } }
+      ]
+    }).sort({ createdAt: -1 });
+
+    res.json({ results: searchResults });
+
   } catch (error) {
+    console.error('Search error:', error);
     res.status(500).json({ error: 'Failed to search commits' });
   }
 });
