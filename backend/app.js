@@ -137,7 +137,7 @@ mongoose.connect(decodedMongoUri)
 
 
   app.use((req, res) => {
-  res.status(404).send('Not Found');
+  res.status(404).send('error 404: Not Found');
 });
 
   export default app;
