@@ -40,7 +40,7 @@ jobs:
           ENCRYPTION_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/ENCRYPTION_KEY" --with-decryption --query "Parameter.Value" --output text)
           GITHUB_AUTH_URL=$(aws ssm get-parameter --name "/releaseforge/backend/GITHUB_AUTH_URL" --query "Parameter.Value" --output text)
           GEMINI_API_KEY=$(aws ssm get-parameter --name "/releaseforge/backend/GEMINI_API_KEY" --with-decryption --query "Parameter.Value" --output text)
-
+          CLIENT_URL=$(aws ssm get-parameter --name "/releaseforge/backend/client_url" --query "Parameter.Value" --output text)
 
           echo "::add-mask::$DYNAMIC_URI"
           echo "::add-mask::$GH_ID"
@@ -49,6 +49,7 @@ jobs:
           echo "::add-mask::$ENCRYPTION_KEY"
           echo "::add-mask::$GITHUB_AUTH_URL"
           echo "::add-mask::$GEMINI_API_KEY"
+          echo "::add-mask::$CLIENT_URL"
           
           echo "MONGO_URI=$DYNAMIC_URI" >> $GITHUB_ENV
           echo "EC2_HOST=$DYNAMIC_IP" >> $GITHUB_ENV
@@ -58,6 +59,7 @@ jobs:
           echo "ENCRYPTION_KEY=$ENCRYPTION_KEY" >> $GITHUB_ENV
           echo "GITHUB_AUTH_URL=$GITHUB_AUTH_URL" >> $GITHUB_ENV
           echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> $GITHUB_ENV
+          echo "CLIENT_URL=$CLIENT_URL" >> $GITHUB_ENV
           aws ssm get-parameter --name "/releaseforge/backend/ec2_private_key" --with-decryption --query "Parameter.Value" --output text > private_key.pem
           chmod 644 private_key.pem
 
@@ -81,11 +83,12 @@ jobs:
           ENCRYPTION_KEY: ${{ env.ENCRYPTION_KEY }}
           GITHUB_AUTH_URL: ${{ env.GITHUB_AUTH_URL }}
           GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
+          CLIENT_URL: ${{ env.CLIENT_URL }}
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem"
-          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY, GITHUB_AUTH_URL, GEMINI_API_KEY
+          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY, GITHUB_AUTH_URL, GEMINI_API_KEY, CLIENT_URL
           script: |
             cd ~/app
             echo "PORT=8080" > .env
@@ -97,7 +100,7 @@ jobs:
             echo "ENCRYPTION_KEY=$ENCRYPTION_KEY" >> .env
             echo "GITHUB_AUTH_URL=$GITHUB_AUTH_URL" >> .env
             echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
-
+            echo "CLIENT_URL=$CLIENT_URL" >> .env
 
             cat << 'EOF' > nginx.conf
             server {
@@ -136,4 +139,3 @@ jobs:
       - name: Cleanup
         if: always()
         run: rm -f private_key.pem
-        
