@@ -489,6 +489,18 @@ resource "aws_ssm_parameter" "gemini_api_key" {
   }
 }
 
+resource "aws_ssm_parameter" "client_url" {
+  name        = "/releaseforge/backend/CLIENT_URL"
+  description = "Frontend URL for ReleaseForge production"
+  type        = "String"
+  value       = var.client_url
+
+  tags = {
+    Environment = "Production"
+    Project     = "ReleaseForge"
+  }
+}
+
 //allow read ssm parameter for EC2 instance (for deployment and backend use) - TODO: attach policy to EC2 role
 # resource "aws_iam_policy" "ssm_read_policy" {
 #   name        = "ReleaseForgeSSMRead"
