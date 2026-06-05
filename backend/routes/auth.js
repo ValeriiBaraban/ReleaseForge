@@ -8,10 +8,11 @@ router.get('/github',
   passport.authenticate('github', { scope: ['user:email', 'repo'] })
 );
 
-router.get('/github/callback',
-  passport.authenticate('github', { failureRedirect: '/' }),
+router.get('/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
   (req, res) => {
-    res.redirect('/dashboard');
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+      res.redirect(`${clientUrl}/dashboard`);
   }
 );
 
