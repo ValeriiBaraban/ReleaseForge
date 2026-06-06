@@ -1,117 +1,15 @@
+Конечно! Я перенес блок с инструкциями по локальному запуску в самое начало документа, сразу после основного заголовка.
+
+Вот обновленный и структурированный вариант твоего отчета:
+
 ReleaseForge 🛠️
 URL
 https://projectsummer.click
 
 Automated Changelog Builder
 
-# ReleaseForge 🛠️
-**URL**
-[https://projectsummer.click](https://projectsummer.click)
-
-**Automated Changelog Builder**
-
-![Structure](./source/image.png)
-
-
-Local Setup Instructions
+🚀 Local Setup Instructions
 To run ReleaseForge locally on your machine, you will need to start both the frontend and backend development servers.
----
-
-## 🚀 Local Setup Instructions
-
-### Prerequisites
-Before you begin, ensure you have the following installed and set up:
-* **Node.js** (v18 or higher)
-* A free **MongoDB Atlas** account and cluster.
-* A **GitHub** account.
-
-### 1. GitHub OAuth Setup
-To enable login functionality, you must create an OAuth App in GitHub:
-1. Go to your GitHub **Settings** -> **Developer Settings** -> **OAuth Apps** -> **New OAuth App**.
-2. Set the **Homepage URL** to `http://localhost:5173`
-3. Set the **Authorization callback URL** to `http://localhost:8080/api/auth/github/callback`
-4. Generate a Client Secret. Save both the **Client ID** and **Client Secret** for the next step.
-
-### 2. Backend Setup & Environment Variables
-Open a terminal and navigate to the backend directory:
-```bash
-cd backend
-npm install
-Create a .env file in the backend directory and paste the following template. Fill in the variables using your MongoDB URI and the GitHub credentials you just created:
-
-```
-PORT=8080
-NODE_ENV=development
-
-# Database Connection
-MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority
-
-# Security and Sessions
-SESSION_SECRET=your_super_secret_session_string
-ENCRYPTION_KEY=your_encryption_key_here_1234567890
-
-# URLs
-CLIENT_URL=http://localhost:5173
-GITHUB_AUTH_URL=http://localhost:8080/api/auth/github/callback
-
-# GitHub OAuth App Configuration
-GH_CLIENT_ID=your_github_client_id_here
-GH_CLIENT_SECRET=your_github_client_secret_here
-
-# AI Integration
-GEMINI_API_KEY=your_google_gemini_api_key_here
-
-```
-
-
-
-Start the backend server:
-
-Bash
-npm run dev
-3. Frontend Setup
-Open a new terminal window and navigate to the frontend directory:
-
-Bash
-cd frontend
-npm install
-Create a .env file in the frontend directory and add the backend API URL so Vite knows where to send requests:
-
-Фрагмент кода
-VITE_API_URL=http://localhost:8080
-Start the frontend application:
-
-Bash
-npm run dev
-To run ReleaseForge locally on your machine, you will need to set up your environment variables and start both the frontend and backend development servers.
-
-### 1. Environment Variables
-Create a `.env` file in the `backend` directory and paste the following template. Fill in the missing values with your own credentials:
-
-```env
-# Server Settings
-PORT=8080
-NODE_ENV=development
-
-# Database Connection (MongoDB Atlas)
-MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority
-
-# Security and Sessions
-SESSION_SECRET=your_super_secret_session_string
-ENCRYPTION_KEY=your_encryption_key_here_1234567890
-
-# Environment URLs
-CLIENT_URL=http://localhost:5173
-GITHUB_AUTH_URL=http://localhost:8080/api/auth/github/callback
-
-# GitHub OAuth App Configuration (from GitHub Developer Settings)
-GH_CLIENT_ID=your_github_client_id_here
-GH_CLIENT_SECRET=your_github_client_secret_here
-
-# AI Integration
-GEMINI_API_KEY=your_google_gemini_api_key_here
-
-```
 
 Start the Backend:
 
