@@ -38,7 +38,7 @@ app.set('trust proxy', true);
 // }));
 
 app.use(cors({
-  origin: ['https://projectsummer.click', 'http://localhost:5173'], 
+  origin: 'https://projectsummer.click', 
   credentials: true
 }));
 
@@ -54,11 +54,11 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: {
-    secure: true, 
+    secure: true,      
     httpOnly: true, 
-    sameSite: 'none',
+    sameSite: 'none',  
     maxAge: 1000 * 60 * 60 * 24 * 7
-  }
+}
 }));
 
 app.use(passport.initialize());
