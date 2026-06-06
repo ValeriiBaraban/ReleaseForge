@@ -288,20 +288,13 @@ resource "aws_cloudfront_distribution" "website" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
     cached_methods   = ["GET", "HEAD"]
 
-    forwarded_values {
-      query_string = true
-      headers      = ["*"] 
-      cookies {
-        forward = "all"
-      }
-    }
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.api_policy.id
+    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" 
 
     min_ttl     = 0
     default_ttl = 0
     max_ttl     = 0
   }
-
-  
 
   default_cache_behavior {
     target_origin_id       = "s3-origin-${aws_s3_bucket.website.id}"
@@ -498,6 +491,26 @@ resource "aws_ssm_parameter" "client_url" {
   tags = {
     Environment = "Production"
     Project     = "ReleaseForge"
+  }
+}
+
+resource "aws_cloudfront_origin_request_policy" "api_policy" {
+  name    = "releaseforge-api-policy"
+  comment = "Policy to pass cookies and CORS headers to backend"
+
+  cookies_config {
+    cookie_behavior = "all"  # connect.sid
+  }
+
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = ["Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"]
+    }
+  }
+
+  query_strings_config {
+    query_string_behavior = "all"
   }
 }
 

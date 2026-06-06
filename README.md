@@ -84,17 +84,31 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 - [x] Initialize React frontend and Express backend.
 - [x] Set up environment variables via AWS SSM and connect the database.
 
-### **Week 2: Database Models & Backend API** *(In Progress)*
+### **Week 2: Database Models & Backend API** *(Completed)*
 - [x] Build Mongoose schemas (User schema completed, others pending).
-- [ ] Develop the remaining CRUD API routes for projects and releases.
+- [x] Develop the remaining CRUD API routes for projects and releases.
 - [x] Implement the GitHub API integration route to fetch commits.
 
-### **Week 3: Frontend Development** *(In Progress)*
+### **Week 3: Frontend Development** *(Completed)*
 - [x] Build the React UI (Dashboard and Login framework established).
 - [x] Connect the frontend to the backend API using Axios/Fetch.
-- [ ] Create the logic for parsing and categorizing fetched commits.
+- [x] Create the logic for parsing and categorizing fetched commits.
 
-### **Week 4: Styling, Testing & Final Export** *(Upcoming Phase)*
-- [ ] Implement final CSS styling for the generated changelog view.
-- [ ] Conduct comprehensive API testing via Postman and end-to-end UI testing.
+### **Week 4: Styling, Testing & Final Export** *(Completed)*
+- [x] Implement final CSS styling for the generated changelog view.
+- [x] Conduct comprehensive API testing via Postman and end-to-end UI testing.
 - [ ] Final bug fixing, code cleanup, and presentation preparation.
+
+## Self-Evaluation
+
+**Approach and Results**
+Building ReleaseForge from scratch for my final project was a great learning experience. I wanted to make a truly useful tool that solves a common developer problem: automatically generating changelogs. The result is a working app: a React frontend, a secure Express backend, a MongoDB database, and reliable cloud hosting.
+
+**What worked well**
+Connecting the app with third-party services turned out really well. GitHub login, fetching commits via their API, and sorting them using the Google Gemini AI worked perfectly. It also really helped that I spent time setting up the infrastructure using Terraform and automated updates (via GitHub Actions). Now, Docker containers are reliably deployed to the AWS EC2 server.
+
+**What didn't work well (Challenges)**
+At the very beginning, debugging the Node.js backend was really hard. It took a lot of time to figure out GitHub login redirects, configure CORS (so requests work both locally and on the AWS server), and find hidden routing errors. I had to dig deep into how Express middleware and network requests actually work to get the frontend and backend to communicate properly.
+
+**What I would do differently**
+If I were to start the project over, I would plan its structure differently from day one. I would strictly separate the code by tasks, plan clean routes before writing any code, and definitely use TypeScript. Strict typing would have helped catch data errors (like wrong Mongoose database keys) while writing the code. This would have saved me hours of hunting for bugs on the backend.
