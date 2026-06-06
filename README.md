@@ -9,12 +9,12 @@ Automated Changelog Builder
 [https://projectsummer.click](https://projectsummer.click)
 
 **Automated Changelog Builder**
-Local Setup Instructions
-To run ReleaseForge locally on your machine, you will need to start both the frontend and backend development servers.
-
 
 ![Structure](./source/image.png)
 
+
+Local Setup Instructions
+To run ReleaseForge locally on your machine, you will need to start both the frontend and backend development servers.
 ---
 
 ## 🚀 Local Setup Instructions
