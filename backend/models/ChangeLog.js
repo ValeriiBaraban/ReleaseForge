@@ -1,6 +1,8 @@
-const changelogItemSchema = new Schema({
+import mongoose from 'mongoose';
+
+const changelogItemSchema = new mongoose.Schema({
   release: { 
-    type: Schema.Types.ObjectId, 
+    type: mongoose.Schema.Types.ObjectId, 
     ref: 'Release', 
     required: true 
   },

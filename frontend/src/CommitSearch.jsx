@@ -32,7 +32,7 @@ export default function CommitSearch({ projectId }) {
       }
 
       const data = await response.json();
-      setResults(data);
+      setResults(data.results || []);
     } catch (err) {
       setError(err.message);
     } finally {

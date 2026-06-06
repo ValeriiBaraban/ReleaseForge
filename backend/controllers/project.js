@@ -1,10 +1,9 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
-import  Project  from '../models/Project.js';
+import Project from '../models/Project.js';
 const router = express.Router();
 
-
-router.get('/projects', isAuthenticated, async (req, res) => {
+router.get('/', isAuthenticated, async (req, res) => {
   try {
     const projects = await Project.find({
       userId: req.user._id
@@ -15,7 +14,7 @@ router.get('/projects', isAuthenticated, async (req, res) => {
    }
 });
 
-router.post('/projects', isAuthenticated, async (req, res) => {
+router.post('/', isAuthenticated, async (req, res) => {
   try {
     const { name, description, repoUrl } = req.body;
     const newProject = new Project({
@@ -31,7 +30,7 @@ router.post('/projects', isAuthenticated, async (req, res) => {
   }   
 });
 
-router.put('/projects/:projectId', isAuthenticated, async (req, res) => {
+router.put('/:projectId', isAuthenticated, async (req, res) => {
   try {
     const { name, description, repoUrl } = req.body;
     const updatedProject = await Project.findOneAndUpdate(
@@ -48,7 +47,7 @@ router.put('/projects/:projectId', isAuthenticated, async (req, res) => {
   }
 });
 
-router.delete('/projects/:projectId', isAuthenticated, async (req, res) => {
+router.delete('/:projectId', isAuthenticated, async (req, res) => {
   try {
     const deletedProject = await Project.findOneAndDelete({ _id: req.params.projectId, userId: req.user._id });
     if (!deletedProject) {

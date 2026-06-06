@@ -1,12 +1,12 @@
 import express from 'express';
 import { isAuthenticated } from '../middlewares/authCheck.js';
-import  Release  from '../models/Release.js';
-import Project  from '../models/Project.js';
+import Release from '../models/Release.js';
+import Project from '../models/Project.js';
 const router = express.Router();
 
 router.get('/projects/:projectId/releases', async (req, res) => {
   try {
-    const releases = await Release.find({ project: req.params.projectId }).sort({ createdAt: -1 });
+    const releases = await Release.find({ projectId: req.params.projectId }).sort({ createdAt: -1 });
     res.json(releases);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch releases' });
@@ -16,11 +16,12 @@ router.get('/projects/:projectId/releases', async (req, res) => {
 router.post('/projects/:projectId/releases', isAuthenticated, async (req, res) => { 
   try {
     const { version, title, changelogMarkdown, includedCommits, status, content } = req.body;
-    const project = await Project.findOne({ _id: req.params.projectId, user: req.user._id });
+    
+    const project = await Project.findOne({ _id: req.params.projectId, userId: req.user._id });
     if (!project) return res.status(403).json({ error: 'Access denied' }); 
       
     const newRelease = new Release({
-      project: req.params.projectId,
+      projectId: req.params.projectId,
       version,
       title,
       content,
@@ -35,9 +36,9 @@ router.post('/projects/:projectId/releases', isAuthenticated, async (req, res) =
   }
 });
 
-router.get('/releases/:releaseId', isAuthenticated, async (req, res) => {
+router.get('/:releaseId', isAuthenticated, async (req, res) => {
   try {
-    const release = await Release.findById(req.params.releaseId).populate('project');
+    const release = await Release.findById(req.params.releaseId).populate('projectId');
     if (!release) return res.status(404).json({ error: 'Release not found' });
     res.json(release);
   } catch (error) {
@@ -45,12 +46,11 @@ router.get('/releases/:releaseId', isAuthenticated, async (req, res) => {
   } 
 });
 
-router.put('/releases/:releaseId', isAuthenticated, async (req, res) => {
+router.put('/:releaseId', isAuthenticated, async (req, res) => {
   try {
     const { version, title, changelogMarkdown, includedCommits, status, content } = req.body;
     const updatedRelease = await Release.findByIdAndUpdate(
       req.params.releaseId,
-      
       { version, title, changelogMarkdown, includedCommits, status, content, publishDate: status === 'published' ? new Date() : null },
       { returnDocument: 'after', runValidators: true }
     );
@@ -61,7 +61,7 @@ router.put('/releases/:releaseId', isAuthenticated, async (req, res) => {
   }
 });
 
-router.delete('/releases/:releaseId', isAuthenticated, async (req, res) => {
+router.delete('/:releaseId', isAuthenticated, async (req, res) => {
   try {
     const deletedRelease = await Release.findByIdAndDelete(req.params.releaseId);
     if (!deletedRelease) return res.status(404).json({ error: 'Release not found' });

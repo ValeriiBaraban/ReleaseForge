@@ -61,7 +61,7 @@ router.delete('/projects/:projectId', isAuthenticated, async (req, res) => {
   }
 });
 
-router.get('/:projectId/commits/search', isAuthenticated, async (req, res) => {
+router.get('/projects/:projectId/commits/search', isAuthenticated, async (req, res) => {
   try {
     const { q } = req.query;
     const { projectId } = req.params;
