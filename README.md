@@ -39,7 +39,7 @@ cd backend
 npm install
 Create a .env file in the backend directory and paste the following template. Fill in the variables using your MongoDB URI and the GitHub credentials you just created:
 
-Фрагмент кода
+```
 PORT=8080
 NODE_ENV=development
 
@@ -60,6 +60,11 @@ GH_CLIENT_SECRET=your_github_client_secret_here
 
 # AI Integration
 GEMINI_API_KEY=your_google_gemini_api_key_here
+
+```
+
+
+
 Start the backend server:
 
 Bash
