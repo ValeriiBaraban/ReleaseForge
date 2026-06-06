@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import mongoStore from 'connect-mongo';
-import projectRoutes from './routes/project.js';
 import cors from 'cors';
 import passport from 'passport';
 import { Strategy as GitHubStrategy } from 'passport-github2';
@@ -32,20 +31,14 @@ const PORT = process.env.PORT || 8080;
 
 app.set('trust proxy', true);
 
-// app.use(cors({
-//   origin: process.env.CLIENT_URL || 'https://projectsummer.click',
-//   credentials: true 
-// }));
-
 app.use(cors({
-  origin: 'https://projectsummer.click', 
-  credentials: true
+  origin: process.env.CLIENT_URL || 'https://projectsummer.click',
+  credentials: true 
 }));
 
 app.use(express.json());
 
 app.use(session({
-  proxy: true, 
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -54,11 +47,12 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: {
-    secure: true,      
+    //TODO: return secure to true when deploying to production with HTTPS
+    secure: false, //process.env.NODE_ENV === 'production',
     httpOnly: true, 
-    sameSite: 'none',  
-    maxAge: 1000 * 60 * 60 * 24 * 7
-}
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+  }
 }));
 
 app.use(passport.initialize());
@@ -66,7 +60,7 @@ app.use(passport.session());
 
 app.use('/api/github', githubRoutes);
 app.use('/api/releases', releaseRoutes);
-app.use('/api/projects', projectRoutes);
+
 passport.serializeUser((user, done) => {
   done(null, user._id);
 });
