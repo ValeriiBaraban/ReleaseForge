@@ -45,6 +45,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use(session({
+  proxy: true, 
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -53,12 +54,10 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: {
-    //TODO: return secure to true when deploying to production with HTTPS
-    proxy: true,
-    secure: true, //process.env.NODE_ENV === 'production',
+    secure: true, 
     httpOnly: true, 
     sameSite: 'none',
-    maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }));
 
