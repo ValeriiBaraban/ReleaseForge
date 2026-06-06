@@ -106,31 +106,26 @@ npm install
 Create a `.env` file inside the `backend` directory.
 
 ```env
-# MongoDB Atlas
-MONGO_URI=mongodb+srv://your-mongodb-connection-string
-
-# Application Configuration
 PORT=8080
 NODE_ENV=development
 
-# Session Management
-SESSION_SECRET=mysecret_for_local_development
+# Database Connection
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>?retryWrites=true&w=majority
 
-# Frontend URL
+# Security and Sessions
+SESSION_SECRET=your_super_secret_session_string
+ENCRYPTION_KEY=your_encryption_key_here_1234567890
+
+# URLs
 CLIENT_URL=http://localhost:5173
-
-# GitHub OAuth Callback URL
 GITHUB_AUTH_URL=http://localhost:8080/api/auth/github/callback
 
-# GitHub OAuth Credentials
-GH_CLIENT_ID=your_github_client_id
-GH_CLIENT_SECRET=your_github_client_secret
+# GitHub OAuth App Configuration
+GH_CLIENT_ID=your_github_client_id_here
+GH_CLIENT_SECRET=your_github_client_secret_here
 
-# Google Gemini API
-GEMINI_API_KEY=your_gemini_api_key
-
-# Encryption Key
-ENCRYPTION_KEY=your_encryption_key
+# AI Integration
+GEMINI_API_KEY=your_google_gemini_api_key_here
 ```
 
 ---
