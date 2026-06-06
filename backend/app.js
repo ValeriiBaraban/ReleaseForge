@@ -32,9 +32,14 @@ const PORT = process.env.PORT || 8080;
 
 app.set('trust proxy', true);
 
+// app.use(cors({
+//   origin: process.env.CLIENT_URL || 'https://projectsummer.click',
+//   credentials: true 
+// }));
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'https://projectsummer.click',
-  credentials: true 
+  origin: ['https://projectsummer.click', 'http://localhost:5173'], 
+  credentials: true
 }));
 
 app.use(express.json());
@@ -51,7 +56,7 @@ app.use(session({
     //TODO: return secure to true when deploying to production with HTTPS
     secure: true, //process.env.NODE_ENV === 'production',
     httpOnly: true, 
-    sameSite: 'lax',
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
