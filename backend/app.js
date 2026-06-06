@@ -48,9 +48,9 @@ app.use(session({
   }),
   cookie: {
     //TODO: return secure to true when deploying to production with HTTPS
-    secure: false, //process.env.NODE_ENV === 'production',
-    httpOnly: true, 
-    sameSite: 'lax',
+    secure: true, //process.env.NODE_ENV === 'production',
+    httpOnly: false, 
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
   }
 }));
