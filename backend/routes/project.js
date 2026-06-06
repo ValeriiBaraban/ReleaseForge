@@ -78,6 +78,7 @@ router.post('/:projectId/releases', isAuthenticated, async (req, res) => {
       projectId: req.params.projectId,
       version,
       title,
+      changelogMarkdown, // <--- ИСПРАВЛЕНИЕ ЗДЕСЬ (Добавлено поле для схемы Mongoose)
       content,
       includedCommits,
       status: status || 'draft',
@@ -100,7 +101,6 @@ router.get('/:projectId/commits/search', isAuthenticated, async (req, res) => {
       return res.json({ results: [] });
     }
 
-    // ИСПРАВЛЕНО: Ищем по ключу projectId
     const releases = await Release.find({ projectId: projectId });
     
     if (releases.length === 0) {
