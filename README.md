@@ -57,6 +57,182 @@ Integration with the **GitHub REST API**. The backend fetches recent commit mess
 * **Release:** Belongs to a Project (e.g., "v1.2.0") and contains publishing dates and statuses (Draft/Published).
 * **ChangelogItem:** Individual update entries associated with a Release, including the text and category type (Feature, Fix, Chore).
 
+---
+
+## 🚀 Local Development Setup
+
+### Prerequisites
+
+Before running the project locally, make sure you have the following installed:
+
+* Node.js (v20+ recommended)
+* npm
+* Git
+* MongoDB Atlas account
+* GitHub OAuth Application
+* Google Gemini API Key
+
+---
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/ValeriiBaraban/ReleaseForge.git
+cd ReleaseForge
+```
+
+---
+
+### Install Dependencies
+
+#### Backend
+
+```bash
+cd backend
+npm install
+```
+
+#### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+---
+
+### Configure Environment Variables
+
+Create a `.env` file inside the `backend` directory.
+
+```env
+# MongoDB Atlas
+MONGO_URI=mongodb+srv://your-mongodb-connection-string
+
+# Application Configuration
+PORT=8080
+NODE_ENV=development
+
+# Session Management
+SESSION_SECRET=mysecret_for_local_development
+
+# Frontend URL
+CLIENT_URL=http://localhost:5173
+
+# GitHub OAuth Callback URL
+GITHUB_AUTH_URL=http://localhost:8080/api/auth/github/callback
+
+# GitHub OAuth Credentials
+GH_CLIENT_ID=your_github_client_id
+GH_CLIENT_SECRET=your_github_client_secret
+
+# Google Gemini API
+GEMINI_API_KEY=your_gemini_api_key
+
+# Encryption Key
+ENCRYPTION_KEY=your_encryption_key
+```
+
+---
+
+### Create a GitHub OAuth Application
+
+1. Open GitHub and navigate to:
+
+   `Settings → Developer Settings → OAuth Apps`
+
+2. Create a new OAuth Application.
+
+3. Configure the application:
+
+**Homepage URL**
+
+```text
+http://localhost:5173
+```
+
+**Authorization Callback URL**
+
+```text
+http://localhost:8080/api/auth/github/callback
+```
+
+4. Copy the generated Client ID and Client Secret into your `.env` file.
+
+---
+
+### Running the Backend
+
+```bash
+cd backend
+npm run dev
+```
+
+The backend server will start on:
+
+```text
+http://localhost:8080
+```
+
+---
+
+### Running the Frontend
+
+Open a second terminal window:
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend application will be available at:
+
+```text
+http://localhost:5173
+```
+
+---
+
+### Verifying the Installation
+
+1. Open the frontend application in your browser.
+2. Click **Login with GitHub**.
+3. Complete GitHub authentication.
+4. Verify that the dashboard loads successfully.
+5. Confirm that a user document is created in MongoDB Atlas.
+6. Test commit import functionality using a public GitHub repository.
+
+---
+
+### Available Scripts
+
+#### Backend
+
+```bash
+npm run dev
+npm start
+```
+
+#### Frontend
+
+```bash
+npm run dev
+npm run build
+npm run preview
+```
+
+---
+
+### Notes
+
+* The `.env` file should never be committed to GitHub.
+* Production secrets are managed using AWS Systems Manager (SSM).
+* MongoDB Atlas must allow connections from your current IP address.
+* GitHub OAuth callback URLs must exactly match the values configured in the GitHub Developer Portal.
+
+---
+
+
 ## 🛣️ API Routes (Express.js)
 
 | Route | Method | Description |
