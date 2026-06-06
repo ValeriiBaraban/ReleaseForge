@@ -12,8 +12,8 @@
 ### Prerequisites
 Before you begin, ensure you have the following installed and set up:
 * **Node.js** (v18 or higher)
-* A free **MongoDB Atlas** account and cluster.
-* A **GitHub** account.
+* A free **MongoDB Atlas** account and cluster
+* A **GitHub** account
 
 ### 1. GitHub OAuth Setup
 To enable login functionality, you must create an OAuth App in GitHub:
@@ -24,6 +24,7 @@ To enable login functionality, you must create an OAuth App in GitHub:
 
 ### 2. Backend Setup & Environment Variables
 Open a terminal and navigate to the backend directory:
+
 ```bash
 cd backend
 npm install
