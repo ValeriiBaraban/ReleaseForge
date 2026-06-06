@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import User from './models/User.js';
 import githubRoutes from './routes/github.js';
 import releaseRoutes from './routes/release.js';
+import projectRoutes from './routes/project.js';
 import path from 'path';
 
 
