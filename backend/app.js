@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 8080;
 app.set('trust proxy', true);
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || 'https://projectsummer.click',
   credentials: true 
 }));
 
