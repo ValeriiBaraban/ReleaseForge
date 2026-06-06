@@ -60,6 +60,7 @@ app.use(passport.session());
 
 app.use('/api/github', githubRoutes);
 app.use('/api/releases', releaseRoutes);
+app.use('/api/projects', projectRoutes);
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
