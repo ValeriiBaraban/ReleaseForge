@@ -189,11 +189,20 @@ data "aws_route53_zone" "main" {
   private_zone = false
 }
 
+data "aws_route53_zone" "new_site" {
+  name         = "releaseforge.link."
+  private_zone = false
+}
+
 resource "aws_acm_certificate" "site_cert" {
   provider = aws.us-east-1
 
   domain_name               = "projectsummer.click"
-  subject_alternative_names = ["www.projectsummer.click"]
+  subject_alternative_names = [
+    "www.projectsummer.click",
+    "releaseforge.link",
+    "www.releaseforge.link"
+  ]
 
   validation_method = "DNS"
 
@@ -212,7 +221,7 @@ resource "aws_route53_record" "site_cert_validation" {
     }
   }
 
-  zone_id = data.aws_route53_zone.main.zone_id
+  zone_id = endswith(each.key, "projectsummer.click") ? data.aws_route53_zone.main.zone_id : data.aws_route53_zone.new_site.zone_id
   name    = each.value.name
   type    = each.value.type
   ttl     = 60
