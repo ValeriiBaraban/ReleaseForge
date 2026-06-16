@@ -3,20 +3,6 @@ resource "mongodbatlas_project" "releaseforge" {
   org_id = var.atlas_org_id
 }
 
-# resource "mongodbatlas_cluster" "cluster" {
-#   project_id   = mongodbatlas_project.releaseforge.id
-#   name         = "releaseforge-cluster"
-#   provider_instance_size_name = "M0"
-
-#   provider_name = "TENANT"
-#   backing_provider_name = "AWS"
-#   provider_region_name  = "US_EAST_1"
-
-#   cluster_type = "REPLICASET"
-
-#   mongo_db_major_version = "7.0"
-# }
-
 resource "mongodbatlas_advanced_cluster" "cluster" {
   project_id   = mongodbatlas_project.releaseforge.id
   name         = var.db_name
