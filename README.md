@@ -7,6 +7,56 @@ https://projectsummer.click
 
 ![Structure](./source/image.png)
 
+## 📢 Week 8 Update: Project Status (Proof of Concept)
+
+**✅ Work Completed (Project Setup & Framework):**
+* **Express Server & Middleware:** Fully functional Express server running, configured with CORS, JSON parsing, and secure proxy trust for deployment.
+* **Database Connection:** Successful integration with **MongoDB Atlas** using Mongoose.
+* **Authentication Framework:** Implemented a robust OAuth workflow using `passport-github2`. Users can successfully log in via GitHub, and their profiles (along with the necessary `accessToken` for future API calls) are saved directly into the MongoDB database.
+* **Session Management:** Configured secure, HTTP-only cookies and integrated `connect-mongo` to store active user sessions persistently in the database.
+* **Frontend Scaffolding:** React SPA initialized with React Router. Built a landing/login page and a protected Dashboard component that successfully verifies user sessions with the backend.
+* **API Routing Framework:** Modularized routing structure is in place (e.g., `/api/auth`, `/api/commits`), ready for expansion.
+
+**🚧 Work Still Needs to be Done:**
+* Complete the remaining Mongoose schemas (`Project`, `Release`, `ChangelogItem`).
+* Finish the CRUD API routes for managing projects and generated changelogs.
+* Connect the frontend Dashboard to the `/api/commits` route to fetch and display the user's real GitHub commit history.
+* Build the interactive UI for parsing and categorizing commits into "Features", "Fixes", etc.
+* Final UI styling (using vanilla CSS) and production deployment tweaks on AWS.
+
+---
+
+ReleaseForge is a productivity tool tailored for software development teams, independent developers, and product managers. It focuses on the product release lifecycle by streamlining the creation of clean, professional release notes and changelogs.
+
+---
+
+## 🛑 Problem Statement
+
+Writing release notes is a tedious task that developers often neglect. Raw Git commit messages are usually too technical or messy for end-users or stakeholders to read. 
+
+Translating these commits into a structured, user-friendly changelog (categorized by *New Features*, *Bug Fixes*, and *Improvements*) takes manual effort and time. ReleaseForge solves this by providing a dedicated workspace to import commit data, easily categorize updates, and generate beautifully formatted release pages.
+
+---
+
+## ⚙️ Technical Components
+
+The application is built using the **MERN stack** (MongoDB, Express, React, Node.js) and provisioned using **Terraform** on **AWS** and MongoDB Atlas.
+
+### 🌐 Infrastructure & Deployment
+* **Frontend:** Hosted on an **AWS S3** bucket and distributed globally via **AWS CloudFront** for high availability.
+* **Backend:** Deployed on an **AWS EC2** instance, utilizing **AWS SSM** (Systems Manager) for secure parameter and secrets management.
+* **Database:** MongoDB Atlas cluster integrated with the backend environment.
+* **IaC:** The entire cloud architecture is codified and deployed using **Terraform**.
+
+### 🌐 External Data Source (API)
+Integration with the **GitHub REST API**. The backend fetches recent commit messages from public repositories to automatically populate draft release notes, saving users from typing everything from scratch.
+
+### 🗄️ Data Models (MongoDB/Mongoose)
+* **User:** Manages authentication and user accounts.
+* **Project:** Represents a software product or repository (e.g., "My React App").
+* **Release:** Belongs to a Project (e.g., "v1.2.0") and contains publishing dates and statuses (Draft/Published).
+* **ChangelogItem:** Individual update entries associated with a Release, including the text and category type (Feature, Fix, Chore).
+
 ---
 
 ## 🚀 Local Development Setup
@@ -176,58 +226,6 @@ npm run preview
 * GitHub OAuth callback URLs must exactly match the values configured in the GitHub Developer Portal.
 
 ---
-
-## 📢 Week 8 Update: Project Status (Proof of Concept)
-
-**✅ Work Completed (Project Setup & Framework):**
-* **Express Server & Middleware:** Fully functional Express server running, configured with CORS, JSON parsing, and secure proxy trust for deployment.
-* **Database Connection:** Successful integration with **MongoDB Atlas** using Mongoose.
-* **Authentication Framework:** Implemented a robust OAuth workflow using `passport-github2`. Users can successfully log in via GitHub, and their profiles (along with the necessary `accessToken` for future API calls) are saved directly into the MongoDB database.
-* **Session Management:** Configured secure, HTTP-only cookies and integrated `connect-mongo` to store active user sessions persistently in the database.
-* **Frontend Scaffolding:** React SPA initialized with React Router. Built a landing/login page and a protected Dashboard component that successfully verifies user sessions with the backend.
-* **API Routing Framework:** Modularized routing structure is in place (e.g., `/api/auth`, `/api/commits`), ready for expansion.
-
-**🚧 Work Still Needs to be Done:**
-* Complete the remaining Mongoose schemas (`Project`, `Release`, `ChangelogItem`).
-* Finish the CRUD API routes for managing projects and generated changelogs.
-* Connect the frontend Dashboard to the `/api/commits` route to fetch and display the user's real GitHub commit history.
-* Build the interactive UI for parsing and categorizing commits into "Features", "Fixes", etc.
-* Final UI styling (using vanilla CSS) and production deployment tweaks on AWS.
-
----
-
-ReleaseForge is a productivity tool tailored for software development teams, independent developers, and product managers. It focuses on the product release lifecycle by streamlining the creation of clean, professional release notes and changelogs.
-
----
-
-## 🛑 Problem Statement
-
-Writing release notes is a tedious task that developers often neglect. Raw Git commit messages are usually too technical or messy for end-users or stakeholders to read. 
-
-Translating these commits into a structured, user-friendly changelog (categorized by *New Features*, *Bug Fixes*, and *Improvements*) takes manual effort and time. ReleaseForge solves this by providing a dedicated workspace to import commit data, easily categorize updates, and generate beautifully formatted release pages.
-
----
-
-## ⚙️ Technical Components
-
-The application is built using the **MERN stack** (MongoDB, Express, React, Node.js) and provisioned using **Terraform** on **AWS** and MongoDB Atlas.
-
-### 🌐 Infrastructure & Deployment
-* **Frontend:** Hosted on an **AWS S3** bucket and distributed globally via **AWS CloudFront** for high availability.
-* **Backend:** Deployed on an **AWS EC2** instance, utilizing **AWS SSM** (Systems Manager) for secure parameter and secrets management.
-* **Database:** MongoDB Atlas cluster integrated with the backend environment.
-* **IaC:** The entire cloud architecture is codified and deployed using **Terraform**.
-
-### 🌐 External Data Source (API)
-Integration with the **GitHub REST API**. The backend fetches recent commit messages from public repositories to automatically populate draft release notes, saving users from typing everything from scratch.
-
-### 🗄️ Data Models (MongoDB/Mongoose)
-* **User:** Manages authentication and user accounts.
-* **Project:** Represents a software product or repository (e.g., "My React App").
-* **Release:** Belongs to a Project (e.g., "v1.2.0") and contains publishing dates and statuses (Draft/Published).
-* **ChangelogItem:** Individual update entries associated with a Release, including the text and category type (Feature, Fix, Chore).
-
-
 
 
 ## 🛣️ API Routes (Express.js)
