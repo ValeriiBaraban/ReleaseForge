@@ -39,7 +39,7 @@ resource "mongodbatlas_advanced_cluster" "cluster" {
 
 resource "mongodbatlas_project_ip_access_list" "allow_all" {
   project_id = mongodbatlas_project.releaseforge.id
-  cidr_block = "0.0.0.0/0"
+  cidr_block = "${aws_instance.releaseforge_backend.public_ip}/32"
   comment    = "dev access"
 }
 
