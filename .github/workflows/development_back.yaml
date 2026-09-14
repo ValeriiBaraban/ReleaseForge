@@ -135,9 +135,9 @@ jobs:
             sudo docker rm backend-server nginx-server || true
             
             sudo docker build -t backend-server .
-            sudo docker run -d --name backend-server --network releaseforge-net --env-file .env backend-server
+            sudo docker run -d --name backend-server --restart unless-stopped --network releaseforge-net --env-file .env backend-server
             
-            sudo docker run -d --name nginx-server --network releaseforge-net -p 80:80 -v $(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine
+            sudo docker run -d --name nginx-server --restart unless-stopped --network releaseforge-net -p 80:80 -v $(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine
       - name: Cleanup
         if: always()
         run: rm -f private_key.pem
