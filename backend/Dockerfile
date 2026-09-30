@@ -1,7 +1,7 @@
 FROM node:22-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --legacy-peer-deps
 COPY . .
 ENV NODE_ENV=production
 USER node
