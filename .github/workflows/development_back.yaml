@@ -85,11 +85,12 @@ jobs:
           GITHUB_AUTH_URL: ${{ env.GITHUB_AUTH_URL }}
           GEMINI_API_KEY: ${{ env.GEMINI_API_KEY }}
           CLIENT_URL: ${{ env.CLIENT_URL }}
+          COMMIT_SHA: ${{ github.sha }}
         with:
           host: ${{ env.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key_path: "private_key.pem"
-          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY, GITHUB_AUTH_URL, GEMINI_API_KEY, CLIENT_URL
+          envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY, GITHUB_AUTH_URL, GEMINI_API_KEY, CLIENT_URL, COMMIT_SHA
           script: |
             cd ~/app
             echo "PORT=8080" > .env
@@ -102,6 +103,7 @@ jobs:
             echo "GITHUB_AUTH_URL=$GITHUB_AUTH_URL" >> .env
             echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
             echo "CLIENT_URL=$CLIENT_URL" >> .env
+            echo "COMMIT_SHA=$COMMIT_SHA" >> .env
 
             cat << 'EOF' > nginx.conf
             server {
@@ -134,8 +136,8 @@ jobs:
             sudo docker stop backend-server nginx-server || true
             sudo docker rm backend-server nginx-server || true
             
-            sudo docker build -t backend-server .
-            sudo docker run -d --name backend-server --restart unless-stopped --network releaseforge-net --env-file .env backend-server
+            sudo docker build -t backend-server:$COMMIT_SHA .
+            sudo docker run -d --name backend-server --restart unless-stopped --network releaseforge-net --env-file .env backend-server:$COMMIT_SHA
             
             sudo docker run -d --name nginx-server --restart unless-stopped --network releaseforge-net -p 80:80 -v $(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf:ro nginx:alpine
       - name: Cleanup
