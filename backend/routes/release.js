@@ -71,9 +71,12 @@ router.post('/generate', isAuthenticated, async (req, res) => {
 
     return res.status(201).json(newRelease);
   } catch (error) {
-    console.error('Release Generation Error:', error);
-    res.status(500).json({ error: 'Failed to generate and save release', 'details': error.message });
-  }
+    console.error('Release Generation Error:', error)
+    res.status(error.status || 500).json({
+        error: 'Failed to generate and save release',
+        'details': error.message
+      });
+    }
 });
 
 router.get('/:projectId/stats', isAuthenticated, async (req, res) => {
