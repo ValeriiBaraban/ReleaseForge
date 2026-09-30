@@ -51,7 +51,7 @@ jobs:
           VITE_API_URL: https://projectsummer.click
           COMMIT_SHA: ${{ github.sha }}
           VITE_GITHUB_CLIENT_ID: ${{ env.GH_CLIENT_ID }}
-
+          
       - name: Debug context
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
