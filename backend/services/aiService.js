@@ -72,5 +72,6 @@ async function classifyCommitsWithAI(commits) {
     'Failed to generate release notes due to AI service failure.'
   );
 }
+}
 
 export default classifyCommitsWithAI;
