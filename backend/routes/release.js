@@ -72,7 +72,7 @@ router.post('/generate', isAuthenticated, async (req, res) => {
     return res.status(201).json(newRelease);
   } catch (error) {
     console.error('Release Generation Error:', error);
-    res.status(500).json({ error: 'Failed to generate and save release', details: error.message });
+    res.status(500).json({ error: 'Failed to generate and save release', 'details': error.message });
   }
 });
 
@@ -96,7 +96,7 @@ router.get('/:projectId/stats', isAuthenticated, async (req, res) => {
       res.json(stats[0]);
     } catch (error) {
       console.error('Fetch Release Stats Error:', error);
-      res.status(500).json({ error: 'Failed to fetch release statistics', details: error.message });  
+      res.status(500).json({ error: 'Failed to fetch release statistics', 'details': error.message });  
     }
   });
 
@@ -107,7 +107,7 @@ router.get('/:projectId', isAuthenticated, async (req, res) => {
     res.json(releases);
   } catch (error) {
     console.error('Fetch Releases Error:', error);
-    res.status(500).json({ error: 'Failed to fetch releases', details: error.message });
+    res.status(500).json({ error: 'Failed to fetch releases', 'details': error.message });
   }
 });
 
@@ -119,7 +119,7 @@ router.get('/release/:releaseId', isAuthenticated, async (req, res) => {
     res.json(release);
   } catch (error) {
     console.error('Fetch Release Error:', error);
-    res.status(500).json({ error: 'Failed to fetch release details', details: error.message });
+    res.status(500).json({ error: 'Failed to fetch release details', 'details': error.message });
   }
 });
 
