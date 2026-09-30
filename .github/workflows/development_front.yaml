@@ -32,11 +32,25 @@ jobs:
         working-directory: ./frontend
         run: npm install
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-west-2
+
+      - name: Fetch GitHub Client ID from SSM
+        run: |
+          GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --with-decryption --query "Parameter.Value" --output text)
+          echo "::add-mask::$GH_ID"
+          echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
+
       - name: Build project
         working-directory: ./frontend
         run: npm run build
         env:
           VITE_API_URL: https://projectsummer.click
+          COMMIT_SHA: ${{ github.sha }}
+          VITE_GITHUB_CLIENT_ID: ${{ env.GH_CLIENT_ID }}
 
       - name: Debug context
         run: |
@@ -44,11 +58,7 @@ jobs:
           echo "GITHUB_REF=$GITHUB_REF"
           echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: us-west-2
+      
 
       - name: Sync site/ to S3 to \site/
         run: |
