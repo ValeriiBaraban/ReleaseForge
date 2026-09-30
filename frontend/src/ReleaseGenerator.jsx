@@ -29,8 +29,8 @@ const ReleaseGenerator = ({ projectId }) => {
       if (!res.ok) throw new Error(data.error || 'error generating release');
 
       setContent(data.content);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
     } finally {
       setLoading(false);
     }
