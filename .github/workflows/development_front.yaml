@@ -57,6 +57,22 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: npm run build
 
+      - name: Check built frontend
+        working-directory: ./frontend
+        run: |
+          echo "Checking for placeholder..."
+          if grep -R "placeholder_id" dist; then
+            echo "❌ PLACEHOLDER FOUND"
+            exit 1
+          else
+            echo "✅ No placeholder found"
+          fi
+
+      - name: Check GitHub Client ID in build
+        working-directory: ./frontend
+        run: |
+          grep -R "github.com/login/oauth" dist || true
+
       - name: Debug context
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
