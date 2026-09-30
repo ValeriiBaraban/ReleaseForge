@@ -98,8 +98,6 @@ jobs:
           envs: MONGO_URI, GH_CLIENT_ID, GH_CLIENT_SECRET, SESSION_SECRET, ENCRYPTION_KEY, GITHUB_AUTH_URL, GEMINI_API_KEY, CLIENT_URL, COMMIT_SHA
           script: |
             cd ~/app
-            echo "GH_CLIENT_ID length=${#GH_CLIENT_ID}"
-            echo "GH_CLIENT_SECRET length=${#GH_CLIENT_SECRET}"
 
             echo "PORT=8080" > .env
             echo "MONGO_URI=$MONGO_URI" >> .env
@@ -112,10 +110,6 @@ jobs:
             echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
             echo "CLIENT_URL=$CLIENT_URL" >> .env
             echo "COMMIT_SHA=$COMMIT_SHA" >> .env
-
-            echo "Created .env:"
-            grep -E '^(GH_CLIENT_ID|GH_CLIENT_SECRET|GITHUB_AUTH_URL)=' .env | sed 's/=.*$/=<set>/'
-            
 
             cat << 'EOF' > nginx.conf
             server {
