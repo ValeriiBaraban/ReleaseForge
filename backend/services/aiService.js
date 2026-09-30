@@ -51,13 +51,15 @@ async function classifyCommitsWithAI(commits) {
     const parsedResponse = JSON.parse(rawText);
     return parsedResponse;
   } catch (error) {
+
+    console.error("AI Error:", error);
+
     if (error.status === 429) {
       throw new Error('Limit reached: The AI service is currently overloaded with requests. Please try again later.429');
     } else if (error.status === 503 || error.status === 500) {
       throw new Error('Service temporarily unavailable: The AI service is currently overloaded with requests. Please try again later.');
     }
     
-    console.error("AI Error:", error);
     throw new Error('Failed to generate release notes due to AI service failure.');
   }
 }
