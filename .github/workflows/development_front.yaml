@@ -39,44 +39,42 @@ jobs:
           aws-region: us-west-2
 
       - name: Fetch GitHub Client ID from SSM
+        id: fetch-github-client-id
         run: |
-          GH_ID=$(aws ssm get-parameter --name "/releaseforge/backend/github_client_id" --with-decryption --query "Parameter.Value" --output text)
+          GH_ID=$(aws ssm get-parameter \
+            --name "/releaseforge/backend/github_client_id" \
+            --with-decryption \
+            --query "Parameter.Value" \
+            --output text)
+
           echo "::add-mask::$GH_ID"
-          echo "GH_CLIENT_ID=$GH_ID" >> $GITHUB_ENV
+          echo "VITE_GITHUB_CLIENT_ID=$GH_ID" >> "$GITHUB_ENV"
 
       - name: Build project
         working-directory: ./frontend
-        run: npm run build
         env:
           VITE_API_URL: https://projectsummer.click
           COMMIT_SHA: ${{ github.sha }}
-          VITE_GITHUB_CLIENT_ID: ${{ env.GH_CLIENT_ID }}
-          
+        run: npm run build
+
       - name: Debug context
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
           echo "GITHUB_REF=$GITHUB_REF"
           echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
 
-      
-
       - name: Sync site/ to S3 to \site/
         run: |
-           aws s3 sync frontend/dist s3://dev-projectsummer.click/ --delete
-      # - name: Invalidate CloudFront cache
-      #   run: |
-      #      aws cloudfront create-invalidation \
-      #       --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-      #       --paths "/*"
+          aws s3 sync frontend/dist s3://dev-projectsummer.click/ --delete
+
       - name: Invalidate CloudFront Cache
         env:
           AWS_DEFAULT_REGION: us-west-2
         run: |
           DIST_ID=$(aws ssm get-parameter --name "/projectsummer/frontend/cloudfront_id" --query "Parameter.Value" --output text)
-          
+
           echo "Distribution ID: $DIST_ID"
-          
-          # 2. Invalidate CloudFront cache with the retrieved ID
+
           aws cloudfront create-invalidation \
-            --distribution-id $DIST_ID \
+            --distribution-id "$DIST_ID" \
             --paths "/*"   
