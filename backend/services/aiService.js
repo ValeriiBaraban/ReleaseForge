@@ -53,7 +53,7 @@ async function classifyCommitsWithAI(commits) {
   } catch (error) {
     if (error.status === 429) {
       throw new Error('Limit reached: The AI service is currently overloaded with requests. Please try again later.429');
-    } else if (error.status === 503) {
+    } else if (error.status === 503 || error.status === 500) {
       throw new Error('Service temporarily unavailable: The AI service is currently overloaded with requests. Please try again later.');
     }
     
