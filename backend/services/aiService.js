@@ -13,247 +13,392 @@ async function classifyCommitsWithAI(commits) {
   }));
 
   // Construct the prompt for the AI model
-  const prompt = `You are a Senior Technical Writer and Developer Advocate. Your task is to transform raw Git commit messages into concise, professional release notes suitable for a public changelog.
+  const prompt = `You are a Senior Technical Writer and Developer Advocate specializing in software release notes.
 
-INPUT:
-You will receive a list of Git commits. Each commit contains at least a commit SHA and a commit message.
+Your task is to transform raw Git commit messages into concise, professional release notes suitable for a public changelog.
 
-OUTPUT:
-Return ONLY a valid JSON array. Do not wrap the JSON in Markdown code fences. Do not include explanations, comments, or any text outside the JSON array.
+The input may contain conventional commits, informal commit messages, abbreviated messages, duplicated commits, merge-related messages, infrastructure changes, and low-information messages.
 
-Each array element MUST be an object containing EXACTLY these three keys:
+OUTPUT FORMAT
 
-"hash": string — the exact commit SHA provided in the input. Do not modify, shorten, normalize, or invent it.
-"category": string — exactly one of:
-"Feature"
-"Fix"
+Return ONLY a valid JSON array.
+
+Do not use Markdown.
+Do not use code fences.
+Do not include explanations before or after the JSON.
+Do not include comments.
+
+Each input commit MUST produce exactly one output object.
+
+Each object MUST contain EXACTLY these three keys:
+
+{
+  "hash": "string",
+  "category": "Feature | Fix | Chore",
+  "cleanText": "string"
+}
+
+FIELD RULES
+
+"hash":
+- Preserve the exact commit SHA provided by the input.
+- Do not shorten, modify, normalize, or invent the SHA.
+
+"category":
+- Must be exactly one of:
+  - "Feature"
+  - "Fix"
+  - "Chore"
+
+"cleanText":
+- Must be professional English.
+- Must use past tense.
+- Must describe what the commit actually changed.
+- Must be concise and suitable for a public changelog.
+- Normally use 5–15 words.
+- Do not mention the commit hash.
+- Do not mention the developer's name.
+- Do not mention issue numbers or internal ticket references.
+
+CATEGORY CLASSIFICATION
+
+Use "Feature" when the commit introduces meaningful new functionality or a new user-facing capability.
+
+Examples:
+- New authentication method
+- New API endpoint
+- New UI functionality
+- New release generation capability
+- New integration
+- New user-facing configuration option
+
+Use "Fix" when the commit corrects existing behavior or resolves a problem.
+
+Examples:
+- Bug fixes
+- Authentication failures
+- API errors
+- Incorrect UI behavior
+- Broken functionality
+- Compatibility problems
+- Error handling improvements
+- Performance problems
+
+Use "Chore" for internal or maintenance changes that do not primarily fix broken functionality or introduce user-facing functionality.
+
+Examples:
+- Refactoring
+- Dependency updates
+- CI/CD changes
+- Docker changes
+- Deployment configuration
+- Infrastructure changes
+- SSL configuration
+- Documentation
+- Tests
+- Code cleanup
+- Removing legacy code
+- Build configuration
+
+IMPORTANT CLASSIFICATION RULE
+
+Classify based on the PURPOSE of the change, not merely the Git prefix.
+
+For example:
+
+"feat: add EC2 IP to MongoDB whitelist"
+
+should be classified as:
+
 "Chore"
-"cleanText": string — a concise, professional release-note description in English.
 
-CATEGORY RULES:
+because it is an infrastructure/security configuration change rather than a new user-facing feature.
 
-"Feature"
-Use "Feature" for:
-New user-facing functionality
-New application capabilities
-New API endpoints or integrations
-New authentication or authorization capabilities
-New UI components or screens
-Significant enhancements that introduce new functionality
-New configuration capabilities exposed to users
+Likewise:
 
-Examples:
+"feat: add multi-domain SSL certificate"
 
-"feat: add GitHub OAuth login" → "Added GitHub OAuth login"
-"create release generation endpoint" → "Added an API endpoint for generating releases"
-"add dark mode" → "Added dark mode support"
-"Fix"
-Use "Fix" for:
-Bug fixes
-Incorrect behavior
-Broken functionality
-Error handling improvements intended to resolve failures
-UI or layout corrections
-Compatibility fixes
-Performance improvements that address an existing problem
-Authentication or API failures being corrected
+should be classified as:
 
-Examples:
-
-"fix auth" → "Fixed user authentication"
-"fix mobile button spacing" → "Fixed button spacing on mobile devices"
-"handle Gemini 429 errors" → "Improved handling of AI service rate-limit errors"
 "Chore"
-Use "Chore" for:
-Refactoring without a user-facing behavior change
-Dependency updates
-Build configuration
-CI/CD changes
-Deployment configuration
-Infrastructure maintenance
-Internal tooling
-Code cleanup
-Documentation
-Formatting or linting
-Test-only changes
-Environment/configuration changes that do not introduce user-facing functionality
+
+because SSL infrastructure configuration is internal deployment infrastructure.
+
+Do NOT blindly trust "feat:", "fix:", or "chore:" prefixes.
+
+CLEAN TEXT RULES
+
+1. Describe the actual change, not the Git workflow.
+
+Bad:
+"Fixed commit"
+
+Good:
+"Fixed GitHub OAuth client ID injection during the frontend build"
+
+2. Prefer outcome-oriented language.
+
+Bad:
+"Changed AI model"
+
+Good:
+"Updated the default AI model to resolve generation failures"
+
+3. Preserve important technical context when it explains the purpose of the change.
+
+For example:
+"Updated the default AI model to resolve generation failures"
+
+is better than:
+
+"Updated AI configuration"
+
+4. Do not invent information.
+
+If the commit says:
+
+"upd Redmi"
+
+you MUST NOT assume that "Redmi" means README, documentation, a device, or any other specific thing unless the commit message itself provides enough evidence.
+
+For an unclear but non-empty message, use a conservative description such as:
+
+"Updated project configuration related to Redmi"
+
+Do not fabricate details.
+
+5. Do not convert vague messages into specific functionality that is not supported by the source.
+
+For example:
+
+"fix auth"
+
+→ "Fixed authentication"
+
+NOT:
+
+"Fixed GitHub OAuth authentication"
+
+unless GitHub OAuth is explicitly mentioned.
+
+6. Remove Git-specific prefixes:
+
+- feat:
+- fix:
+- chore:
+- refactor:
+- docs:
+- test:
+- perf:
+- build:
+- ci:
+- WIP
+- TODO
+
+7. Remove unnecessary internal wording.
+
+For example:
+
+"fix: add error messages for ai server error"
+
+→
+
+"Added descriptive error messages for AI service failures"
+
+8. Avoid implementation details unless they are useful for understanding the change.
+
+For example:
+
+"Passed environment variable through Vite's build process"
+
+is less useful than:
+
+"Fixed GitHub OAuth client ID injection during the frontend build"
+
+9. Do not exaggerate.
+
+Do not turn:
+
+"update mongodb, mongoose"
+
+into:
+
+"Improved database performance and reliability"
+
+because the commit does not provide evidence for those claims.
+
+Instead:
+
+"Updated MongoDB and Mongoose dependencies"
+
+10. Use consistent terminology.
+
+Prefer:
+
+- "AI service" instead of "AI server"
+- "authentication" instead of "auth"
+- "dependencies" instead of "deps"
+- "deployment configuration" instead of "deploy stuff"
+- "CI/CD workflow" instead of "workflow changes"
+
+11. Use a clear action verb whenever possible:
+
+- Added
+- Fixed
+- Updated
+- Improved
+- Refactored
+- Removed
+- Configured
+- Implemented
+- Enhanced
+- Reverted
+- Resolved
+
+DUPLICATE COMMITS
+
+Do NOT remove duplicate commits.
+
+Every input commit must still produce exactly one output object.
+
+If several commits have effectively the same message, each must retain its own SHA and produce its own release-note object.
+
+Do not merge, combine, or deduplicate commits.
+
+REVERT COMMITS
+
+For explicit revert commits, describe the actual action as a revert.
+
+Example:
+
+Input:
+"Revert 'update README'"
+
+Output:
+"Reverted the previous README changes"
+
+Category:
+"Chore"
+
+Do not describe the original change as if it were implemented again.
+
+LOW-INFORMATION COMMITS
+
+If the message is vague but its meaning can be reasonably determined, produce the most conservative useful description.
 
 Examples:
 
-"bump react" → "Updated frontend dependencies"
-"refactor auth service" → "Refactored authentication service"
-"update github actions" → "Updated the CI/CD workflow"
-"add unit tests" → "Added unit tests"
+"fix auth"
+→ "Fixed authentication"
 
-CLASSIFICATION PRIORITY:
+"fix: refactor"
+→ "Refactored internal application logic"
 
-When a commit could fit multiple categories, classify it according to the primary purpose of the change:
+"update mongodb"
+→ "Updated MongoDB configuration"
 
-New functionality → "Feature"
-Existing functionality corrected or improved because of a problem → "Fix"
-Internal, maintenance, infrastructure, testing, dependency, or development workflow change → "Chore"
+"deploy docker image"
+→ "Updated Docker image deployment"
 
-Do not classify a commit as "Feature" merely because it changes code. The change must introduce or expose meaningful new functionality.
+If the message is completely empty, corrupted, or meaningless, use:
 
-CLEAN TEXT RULES:
+"Internal system updates"
 
-Write in professional English.
-Always use past tense.
-Start with a clear action verb whenever possible:
-Added
-Fixed
-Updated
-Improved
-Refactored
-Removed
-Implemented
-Enhanced
-Configured
-Describe the outcome or purpose of the change, not the developer's implementation process.
-Preserve the actual meaning of the original commit. Do not invent functionality that is not supported by the commit message.
-Remove:
-Issue numbers
-Ticket references
-Branch names
-WIP/TODO prefixes
-Conventional Commit prefixes such as "feat:", "fix:", "chore:", "refactor:"
-Developer-specific jargon that is not useful to end users
-Expand abbreviations when their meaning is clear from context.
-Keep the description concise: normally 5–15 words.
-Avoid unnecessary technical implementation details unless they are important to understanding the change.
-Do not mention files, functions, variables, commit hashes, or internal implementation details unless they are relevant to the public-facing change.
-Do not use first person ("I", "we", "our").
-Do not use vague descriptions such as:
-"Made some changes"
-"Updated code"
-"Fixed things"
-"Various improvements"
-unless the original message provides no meaningful information.
-Do not exaggerate the scope of a change.
-Do not combine multiple commits into one release note. Return exactly one object for every input commit.
+with category:
 
-AMBIGUOUS OR LOW-INFORMATION COMMITS:
+"Chore"
 
-If the commit message is vague but its intent can reasonably be inferred, rewrite it using the most conservative interpretation supported by the text.
+Do NOT invent a specific purpose for gibberish.
+
+SPECIAL CASE: DOCUMENTATION
+
+Only classify a commit as documentation when the commit explicitly indicates documentation or a README change.
 
 Examples:
 
-"fix login" → "Fixed user login"
-"update release page" → "Updated the release page"
-"cleanup API" → "Refactored API implementation"
-"docker changes" → "Updated Docker configuration"
+"update README"
+→ "Updated project documentation"
 
-If the message is empty, meaningless, corrupted, or complete gibberish, use:
+"docs: improve installation instructions"
+→ "Updated installation documentation"
 
-"cleanText": "Internal system updates"
-"category": "Chore"
+Do NOT assume that an abbreviation such as "upd Redmi" means "updated README".
 
-Do not invent details to make an unclear commit appear more specific.
+SPECIAL CASE: INFRASTRUCTURE
 
-JSON VALIDATION REQUIREMENTS:
+Infrastructure, deployment, cloud, Docker, SSL, CI/CD, AWS, EC2, MongoDB networking, and environment configuration changes should normally be classified as "Chore" unless the commit clearly fixes an existing malfunction.
 
-Before returning the result, verify that:
+Examples:
 
-The output is valid JSON.
-The top-level value is an array.
-Every array element is an object.
-Every object contains exactly "hash", "category", and "cleanText".
-Every "hash" exactly matches the corresponding input SHA.
-Every category is exactly "Feature", "Fix", or "Chore".
-Every "cleanText" is a string.
-There is exactly one output object per input commit.
-No Markdown, comments, explanations, or additional fields are included.
+"add hash-tag for docker container for backend"
+→ Chore
+→ "Added version tags to backend Docker images"
 
-EXAMPLES:
+"initial deploy"
+→ Chore
+→ "Configured the initial production deployment"
 
-Input:
-feat(auth): add google oauth login
+"improve workflow for backend"
+→ Chore
+→ "Improved the backend CI/CD workflow"
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Feature",
-"cleanText": "Added Google OAuth login"
-}
-]
+"add EC2 IP to MongoDB whitelist"
+→ Chore
+→ "Added the EC2 server IP to the MongoDB allowlist"
 
-Input:
-fix: resolve mobile button margin issue
+SPECIAL CASE: ERROR HANDLING
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Fix",
-"cleanText": "Fixed button margins on mobile devices"
-}
-]
+If a commit adds or improves user-visible error handling, classify it as "Fix".
 
-Input:
-chore: update React dependencies
+Example:
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Chore",
-"cleanText": "Updated frontend dependencies"
-}
-]
+"fix: add error messages for ai server error"
+→ Fix
+→ "Added descriptive error messages for AI service failures"
 
-Input:
-refactor: reorganize authentication service
+If the change only modifies internal logging without changing behavior or user-visible errors, classify it as "Chore".
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Chore",
-"cleanText": "Refactored the authentication service"
-}
-]
+SPECIAL CASE: DEPENDENCIES
 
-Input:
-fix: handle Gemini API rate limits
+Dependency updates are normally "Chore".
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Fix",
-"cleanText": "Improved handling of AI service rate limits"
-}
-]
+Examples:
 
-Input:
-feat: add release generation endpoint
+"update mongodb, mongoose"
+→ Chore
+→ "Updated MongoDB and Mongoose dependencies"
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Feature",
-"cleanText": "Added an API endpoint for release generation"
-}
-]
+"fix dependency conflict for mongodb"
 
-Input:
-[empty or meaningless commit message]
+If the commit explicitly resolves a broken dependency conflict, classify it as "Fix":
 
-Output:
-[
-{
-"hash": "EXACT_SHA",
-"category": "Chore",
-"cleanText": "Internal system updates"
-}
-]
+"Resolved MongoDB dependency conflicts"
 
-FINAL INSTRUCTION:
+QUALITY REQUIREMENTS
 
-Process every provided commit independently and return only the final JSON array.
+Before returning the JSON, verify:
 
+1. There is exactly one output object per input commit.
+2. Every SHA exactly matches the input.
+3. Every object has exactly three keys:
+   "hash", "category", "cleanText"
+4. Every category is exactly:
+   "Feature", "Fix", or "Chore"
+5. Every cleanText is professional English.
+6. Every cleanText uses past tense.
+7. No unsupported details were invented.
+8. Git prefixes and issue numbers were removed.
+9. Infrastructure and maintenance changes were not incorrectly classified as Features.
+10. Revert commits describe the revert itself.
+11. Duplicate commits were not removed or merged.
+12. The final output is valid JSON.
+13. No text exists outside the JSON array.
+
+FINAL INSTRUCTION
+
+Process every commit independently.
+
+Return ONLY the final JSON array.
 Commits to process:
     ${JSON.stringify(simplifiedCommits)}`;
 
