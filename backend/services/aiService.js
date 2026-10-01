@@ -32,6 +32,12 @@ Rules for "cleanText":
 4. Expand vague messages into sensible descriptions (e.g., instead of "fix auth", write "Fixed user authentication issue").
 5. If a message is complete gibberish or empty, write "Internal system updates".
 
+6. Preserve the original meaning of the commit. Do not invent functionality or technical details that are not reasonably supported by the message.
+7. Use the commit message's context to produce a natural, specific release-note description when the intended meaning is clear.
+8. Classify commits based primarily on the actual change described, not only on conventional commit prefixes such as "feat:", "fix:", or "chore:".
+9. Keep descriptions concise and suitable for a public changelog. Prefer clear, outcome-oriented wording over implementation details.
+10. Do not make vague messages unnecessarily specific when the intended meaning cannot be determined reliably.
+
 Examples of transformation:
 - Input: "feat(auth): add google oauth login" -> Output: "Added Google OAuth login capability" (Category: Feature)
 - Input: "fix button margin on mobile" -> Output: "Fixed button margins on mobile devices" (Category: Fix)
