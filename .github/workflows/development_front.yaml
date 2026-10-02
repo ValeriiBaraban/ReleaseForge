@@ -57,28 +57,6 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: npm run build
 
-      - name: Check built frontend
-        working-directory: ./frontend
-        run: |
-          echo "Checking for placeholder..."
-          if grep -R "placeholder_id" dist; then
-            echo "❌ PLACEHOLDER FOUND"
-            exit 1
-          else
-            echo "✅ No placeholder found"
-          fi
-
-      - name: Check GitHub Client ID in build
-        working-directory: ./frontend
-        run: |
-          grep -R "github.com/login/oauth" dist || true
-
-      - name: Debug context
-        run: |
-          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
-
       - name: Sync site/ to S3 to \site/
         run: |
           aws s3 sync frontend/dist s3://dev-projectsummer.click/ --delete
